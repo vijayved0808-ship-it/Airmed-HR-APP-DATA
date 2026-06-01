@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airmed Lab - Employee Portal</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f8; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .container { background: white; width: 100%; max-width: 400px; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; }
+        .logo { font-size: 24px; font-weight: bold; color: #1e3a8a; margin-bottom: 20px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        button { width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; color: white; margin-top: 10px; }
+        .btn-login { background-color: #2563eb; }
+        .btn-in { background-color: #10b981; }
+        .btn-out { background-color: #f59e0b; }
+        .btn-logout { background-color: #ef4444; margin-top: 30px; }
+        #dashboard { display: none; }
+        .status { margin-top: 15px; font-size: 14px; color: #64748b; }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="loginBox">
+        <div class="logo">Airmed Lab</div>
+        <h3>Employee Login</h3>
+        <input type="text" id="empId" placeholder="Employee ID (e.g. AIRMED-001)">
+        <input type="password" id="password" placeholder="PIN/Password">
+        <button class="btn-login" onclick="login()">Login</button>
+        <div id="loginError" style="color: red; margin-top: 10px; display: none;"></div>
+    </div>
+
+    <div class="container" id="dashboard">
+        <div class="logo">Airmed Lab</div>
+        <h3 id="welcomeText">Welcome</h3>
+        <p class="status" id="gpsStatus">Fetching GPS Location...</p>
+        
+        <button class="btn-in" onclick="punch('IN')">PUNCH IN (Start Day)</button>
+        <button class="btn-out" onclick="punch('OUT')">PUNCH OUT (End Day)</button>
+        
+        <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+
+    <script>
+        let currentLat = null;
+        let currentLng = null;
+
+        // Auto-fetch GPS
+        function getGPS() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        currentLat = position.coords.latitude;
+                        currentLng = position.coords.longitude;
+                        document.getElementById('gpsStatus').innerText = `📍 GPS Active: ${currentLat.toFixed(4)}, ${currentLng.toFixed(4)}`;
+                        document.getElementById('gpsStatus').style.color = "green";
+                    },
+                    (error) => {
+                        document.getElementById('gpsStatus').innerText = "⚠️ Please enable GPS/Location access!";
+                        document.getElementById('gpsStatus').style.color = "red";
+                    },
+                    { enableHighAccuracy: true }
+                );
+            }
+        }
+
+        async function login() {
+            const empId = document.getElementById('empId').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const res = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ empId, password })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    localStorage.setItem('empId', data.empId);
+                    document.getElementById('welcomeText').innerText = `Welcome, ${data.name}`;
+                    document.getElementById('loginBox').style.display = 'none';
+                    document.getElementById('dashboard').style.display = 'block';
+                    getGPS(); // Start fetching GPS once logged in
+                } else {
+                    document.getElementById('loginError').innerText = data.message;
+                    document.getElementById('loginError').style.display = 'block';
+                }
+            } catch (err) {
+                alert("Server connection error.");
+            }
+        }
+
+        async function punch(type) {
+            const empId = localStorage.getItem('empId');
+            if (!currentLat || !currentLng) {
+                alert("GPS Location not found. Please enable location services and wait a moment.");
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/punch', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ empId, type, lat: currentLat, lng: currentLng })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    alert(`✅ ${data.message}`);
+                } else {
+                    alert(`❌ Error: ${data.message}`);
+                }
+            } catch (err) {
+                alert("Failed to submit punch.");
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('empId');
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('loginBox').style.display = 'block';
+            document.getElementById('empId').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        // Auto-login check
+        if (localStorage.getItem('empId')) {
+            document.getElementById('loginBox').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            document.getElementById('welcomeText').innerText = `Employee ID: ${localStorage.getItem('empId')}`;
+            getGPS();
+        }
+    </script>
+</body>
+</html>
