@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Airmed Lab - Employee Portal</title>
     
-    <!-- PWA & Fonts & Icons -->
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#1e3a8a">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -20,7 +19,6 @@
             color: #1e293b; padding: 15px; overflow-x: hidden;
         }
 
-        /* Animated Container */
         .container { 
             background: rgba(255, 255, 255, 0.95); 
             backdrop-filter: blur(10px);
@@ -32,23 +30,14 @@
             border: 1px solid rgba(255,255,255,0.8);
         }
 
-        @keyframes slideUp {
-            0% { opacity: 0; transform: translateY(30px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes slideUp { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
 
-        /* Branding */
         .logo { font-size: 28px; font-weight: 800; color: #1e3a8a; margin-bottom: 25px; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .logo i { color: #3b82f6; font-size: 32px; animation: heartbeat 2s infinite; }
-
-        @keyframes heartbeat {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
+        @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
 
         h3 { color: #334155; margin-bottom: 20px; font-weight: 600; font-size: 18px; }
 
-        /* Modern Inputs */
         .input-group { position: relative; margin-bottom: 15px; }
         .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
         input, textarea { 
@@ -56,10 +45,9 @@
             border: 2px solid #e2e8f0; border-radius: 12px; 
             font-size: 15px; background-color: #f8fafc; transition: all 0.3s ease; 
         }
-        textarea { padding-left: 14px; resize: none; }
+        textarea { padding-left: 14px; resize: none; margin-bottom: 10px; }
         input:focus, textarea:focus { outline: none; border-color: #3b82f6; background-color: #fff; box-shadow: 0 0 0 4px rgba(59,130,246,0.1); }
 
-        /* Premium Buttons */
         button { 
             width: 100%; padding: 15px; border: none; border-radius: 12px; 
             font-size: 15px; font-weight: 600; cursor: pointer; 
@@ -70,19 +58,14 @@
 
         .btn-login { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); box-shadow: 0 4px 12px rgba(37,99,235,0.3); margin-top: 5px; }
         .btn-login:hover { box-shadow: 0 6px 15px rgba(37,99,235,0.4); transform: translateY(-2px); }
-
         .btn-in { background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 4px 12px rgba(16,185,129,0.3); }
         .btn-in:hover { box-shadow: 0 6px 15px rgba(16,185,129,0.4); transform: translateY(-2px); }
-
         .btn-out { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); box-shadow: 0 4px 12px rgba(245,158,11,0.3); }
         .btn-out:hover { box-shadow: 0 6px 15px rgba(245,158,11,0.4); transform: translateY(-2px); }
-
         .btn-history { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; margin-top: 25px; }
         .btn-history:hover { background: #e2e8f0; color: #1e293b; }
-
         .btn-logout { background: transparent; color: #ef4444; margin-top: 5px; font-size: 14px; }
         .btn-logout:hover { text-decoration: underline; background: #fee2e2; }
-
         .btn-install { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); margin-bottom: 25px; display: none; animation: pulseGlow 2s infinite; }
 
         @keyframes pulseGlow {
@@ -91,16 +74,12 @@
             100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
         }
 
-        /* Section Visibility */
         #dashboard, #historySection { display: none; }
-
-        /* GPS Status Badge */
-        .status { margin: 15px 0 25px 0; font-size: 13px; font-weight: 600; background: #f8fafc; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; flex-direction: column; align-items: center; gap: 5px; transition: 0.3s; }
+        .status { margin: 15px 0 20px 0; font-size: 13px; font-weight: 600; background: #f8fafc; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; flex-direction: column; align-items: center; gap: 5px; transition: 0.3s; }
         .live-dot { height: 10px; width: 10px; background-color: #10b981; border-radius: 50%; display: inline-block; animation: dotPulse 1.5s infinite; }
         @keyframes dotPulse { 0% { transform: scale(0.8); opacity: 0.5; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(0.8); opacity: 0.5; } }
         .error-text { color: #ef4444; margin-top: 15px; display: none; font-size: 14px; font-weight: 600; background: #fee2e2; padding: 10px; border-radius: 8px; }
 
-        /* History Table & Stats */
         .stats-grid { display: flex; gap: 12px; margin-bottom: 20px; }
         .stat-card { flex: 1; background: #ffffff; padding: 15px 10px; border-radius: 16px; font-size: 12px; font-weight: 600; box-shadow: 0 4px 10px rgba(0,0,0,0.04); border: 1px solid #f1f5f9; transition: 0.3s; }
         .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.08); }
@@ -110,17 +89,10 @@
         .history-table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; }
         .history-table th { background: #f8fafc; color: #64748b; padding: 12px; position: sticky; top: 0; z-index: 10; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
         .history-table td { padding: 12px; border-bottom: 1px solid #f1f5f9; color: #334155; }
-        .history-table tr:hover { background: #f8fafc; }
-        
-        /* Custom Scrollbar for table */
-        .table-wrapper::-webkit-scrollbar { width: 6px; }
-        .table-wrapper::-webkit-scrollbar-track { background: #f1f5f9; }
-        .table-wrapper::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <!-- ================= LOGIN SCREEN ================= -->
     <div class="container" id="loginBox">
         <div class="logo"><i class="fas fa-heartbeat"></i> Airmed Lab</div>
         <button id="installAppBtn" class="btn-install"><i class="fas fa-download"></i> Install App on Phone</button>
@@ -140,13 +112,12 @@
         <div id="loginError" class="error-text"><i class="fas fa-exclamation-circle"></i> <span></span></div>
     </div>
 
-    <!-- ================= MAIN DASHBOARD ================= -->
     <div class="container" id="dashboard">
         <div class="logo"><i class="fas fa-heartbeat"></i> Airmed Lab</div>
         <h3 id="welcomeText">Welcome</h3>
         
         <div class="status" id="gpsStatus">
-            <span style="color:#64748b;"><i class="fas fa-spinner fa-spin"></i> Fetching GPS...</span>
+            <span style="color:#64748b;"><i class="fas fa-spinner fa-spin"></i> Fetching Smart GPS...</span>
         </div>
         
         <div>
@@ -159,7 +130,6 @@
         <button class="btn-logout" onclick="logout()"><i class="fas fa-power-off"></i> Logout securely</button>
     </div>
 
-    <!-- ================= HISTORY DASHBOARD ================= -->
     <div class="container" id="historySection">
         <div class="logo"><i class="fas fa-calendar-check"></i> My Attendance</div>
         
@@ -186,11 +156,11 @@
     </div>
 
     <script>
-        let currentLat = null, currentLng = null;
+        let currentLat = null, currentLng = null, currentAccuracy = null;
 
         function getGPS() {
             const gpsBox = document.getElementById('gpsStatus');
-            gpsBox.innerHTML = '<span style="color:#64748b;"><i class="fas fa-spinner fa-spin"></i> Fetching GPS...</span>';
+            gpsBox.innerHTML = '<span style="color:#64748b;"><i class="fas fa-spinner fa-spin"></i> Fetching Smart GPS...</span>';
             gpsBox.style.background = "#f8fafc";
             gpsBox.style.borderColor = "#e2e8f0";
 
@@ -199,9 +169,14 @@
                     (position) => {
                         currentLat = position.coords.latitude;
                         currentLng = position.coords.longitude;
-                        gpsBox.innerHTML = `<div style="display:flex; align-items:center; gap:8px; color:#059669;"><i class="live-dot"></i> GPS Active</div><small style="color:#64748b; font-weight:400;">${currentLat.toFixed(5)}, ${currentLng.toFixed(5)}</small>`;
-                        gpsBox.style.background = "#ecfdf5";
-                        gpsBox.style.borderColor = "#a7f3d0";
+                        currentAccuracy = position.coords.accuracy;
+
+                        let signalQuality = currentAccuracy <= 50 ? "Excellent" : (currentAccuracy <= 150 ? "Good" : "Weak (AI will assist)");
+                        let signalColor = currentAccuracy <= 150 ? "#059669" : "#f59e0b";
+
+                        gpsBox.innerHTML = `<div style="display:flex; align-items:center; justify-content:center; gap:8px; color:${signalColor};"><i class="live-dot" style="background-color:${signalColor};"></i> GPS Active</div><small style="color:#64748b; font-weight:400;">Signal: ${signalQuality} | Accuracy: ±${Math.round(currentAccuracy)}m</small>`;
+                        gpsBox.style.background = currentAccuracy <= 150 ? "#ecfdf5" : "#fffbeb";
+                        gpsBox.style.borderColor = currentAccuracy <= 150 ? "#a7f3d0" : "#fde68a";
                     },
                     (error) => {
                         gpsBox.innerHTML = `<div style="color:#dc2626;"><i class="fas fa-exclamation-triangle"></i> Enable High Accuracy GPS!</div>`;
@@ -248,7 +223,8 @@
             try {
                 const res = await fetch('/api/punch', {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ empId, type, lat: currentLat, lng: currentLng, remark })
+                    // Sending accuracy data to AI backend
+                    body: JSON.stringify({ empId, type, lat: currentLat, lng: currentLng, accuracy: currentAccuracy, remark })
                 });
                 const data = await res.json();
                 
@@ -315,7 +291,6 @@
             getGPS();
         }
 
-        // Init Check
         if (localStorage.getItem('empId')) showDashboard(localStorage.getItem('empName'));
 
         // PWA Script
