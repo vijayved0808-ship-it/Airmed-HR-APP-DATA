@@ -11,49 +11,33 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: #f4f7f6; color: #1e293b; overflow-x: hidden; }
-        
         .navbar { background: #ffffff; color: #1e3a8a; padding: 20px 30px; font-size: 24px; font-weight: 800; box-shadow: 0 4px 20px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
         .navbar span { font-size: 14px; font-weight: 400; color: #64748b; background: #f1f5f9; padding: 5px 12px; border-radius: 20px; }
-        
         .main-container { display: flex; flex-wrap: wrap; padding: 30px; gap: 30px; max-width: 1600px; margin: 0 auto; }
         .panel { background: #ffffff; padding: 25px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); flex: 1; min-width: 320px; transition: 0.3s ease; border: 1px solid #f1f5f9; }
         .wide-panel { flex: 2; min-width: 650px; }
-        
         h3 { margin-bottom: 20px; color: #0f172a; font-weight: 600; display: flex; align-items: center; gap: 10px; font-size: 18px; }
-        h3 i { color: #3b82f6; background: #eff6ff; padding: 8px; border-radius: 8px; }
-        
-        input, select { width: 100%; padding: 10px 12px; margin: 5px 0 10px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; background: #f8fafc; transition: 0.3s; }
-        input:focus, select:focus { outline: none; border-color: #3b82f6; background: #ffffff; box-shadow: 0 0 0 4px rgba(59,130,246,0.1); }
-        
-        button { padding: 10px 15px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; border: none; display: inline-flex; align-items: center; gap: 6px; }
-        .btn-primary { background: #3b82f6; color: white; box-shadow: 0 4px 12px rgba(59,130,246,0.3); }
-        .btn-success { background: #10b981; color: white; box-shadow: 0 4px 12px rgba(16,185,129,0.3); }
-        .btn-warning { background: #f59e0b; color: white; }
-        .btn-danger { background: #ef4444; color: white; }
+        input, select { width: 100%; padding: 10px 12px; margin: 5px 0 10px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; background: #f8fafc; }
+        button { padding: 10px 15px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-primary { background: #3b82f6; color: white; } .btn-success { background: #10b981; color: white; }
+        .btn-warning { background: #f59e0b; color: white; } .btn-danger { background: #ef4444; color: white; }
         .btn-outline { background: transparent; border: 2px solid #e2e8f0; color: #475569; }
-        
         #map { height: 350px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #e2e8f0; z-index: 1; }
         .table-wrapper { overflow-x: auto; border-radius: 12px; border: 1px solid #e2e8f0; }
         table { width: 100%; border-collapse: collapse; font-size: 13px; background: white; white-space: nowrap; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #f1f5f9; }
         th { background: #f8fafc; color: #64748b; font-weight: 600; text-transform: uppercase; font-size: 11px; position: sticky; top: 0; z-index: 10;}
-        
         .badge { padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-block; }
-        .b-green { background: #d1fae5; color: #065f46; }
-        .b-red { background: #fee2e2; color: #991b1b; }
-        .b-orange { background: #ffedd5; color: #9a3412; }
-        .b-blue { background: #dbeafe; color: #1e40af; }
-        
+        .b-green { background: #d1fae5; color: #065f46; } .b-red { background: #fee2e2; color: #991b1b; }
+        .b-orange { background: #ffedd5; color: #9a3412; } .b-blue { background: #dbeafe; color: #1e40af; }
         .live-dot { height: 8px; width: 8px; background-color: #10b981; border-radius: 50%; display: inline-block; margin-right: 5px; animation: pulse 1.5s infinite; }
-        .error-log { color: #ef4444; font-size: 12px; background: #fee2e2; padding: 4px 8px; border-radius: 4px; margin-top: 4px; display: inline-block; }
-        .remark-text { color: #8b5cf6; font-size: 12px; background: #f3e8ff; padding: 4px 8px; border-radius: 4px; margin-top: 4px; display: inline-block; font-style: italic; }
+        .error-log { color: #ef4444; font-size: 12px; background: #fee2e2; padding: 4px 8px; border-radius: 4px; display: inline-block; }
         .text-danger { color: #ef4444; font-weight: bold; }
         .upload-box { border: 2px dashed #cbd5e1; padding: 20px; text-align: center; border-radius: 12px; background: #f8fafc; cursor: pointer; flex-grow: 1;}
         .flex-row { display: flex; gap: 10px; align-items: center; margin-bottom: 10px;}
-
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
 
-        /* PULSING DIVICON GLOW EFFECTS FOR MAP DOTS */
+        /* Map Fixes */
         .pulse-marker-in { background: #10b981; border: 2px solid white; border-radius: 50%; animation: map-pulse-green 1.5s infinite; }
         .pulse-marker-out { background: #ef4444; border: 2px solid white; border-radius: 50%; animation: map-pulse-red 1.5s infinite; }
         @keyframes map-pulse-green { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.8); } 70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
@@ -84,12 +68,11 @@
     </div>
 
     <div class="main-container">
-        
         <div class="panel wide-panel">
-            <h3><i class="fas fa-satellite-dish"></i> Live Workforce & Daily Day Logs</h3>
+            <h3><i class="fas fa-satellite-dish"></i> Live Workforce & Daily Logs</h3>
             <div class="table-wrapper">
                 <table id="liveTable">
-                    <thead><tr><th>Employee</th><th>Status</th><th>Punch IN</th><th>Punch OUT</th><th>Remarks</th><th>System Logs</th></tr></thead>
+                    <thead><tr><th>Employee</th><th>Status</th><th>Punch IN</th><th>Punch OUT</th><th>System Logs</th></tr></thead>
                     <tbody></tbody>
                 </table>
             </div>
@@ -99,7 +82,7 @@
             <h3><i class="fas fa-user-shield"></i> Manage Staff</h3>
             <input type="hidden" id="empDbId">
             <div class="flex-row">
-                <input type="text" id="empId" placeholder="Emp ID (AIRMED-01)">
+                <input type="text" id="empId" placeholder="Emp ID">
                 <input type="text" id="empName" placeholder="Full Name">
             </div>
             <div class="flex-row">
@@ -107,10 +90,10 @@
                 <input type="text" id="empPhone" placeholder="WhatsApp No">
             </div>
             <div class="flex-row">
-                <input type="time" id="empShift" title="Shift Start Time" value="09:00">
-                <input type="number" id="empHours" placeholder="Duty Hours" value="9">
+                <input type="time" id="empShift" title="Shift Start" value="09:00">
+                <input type="number" id="empHours" placeholder="Hrs" value="9">
             </div>
-            <button class="btn-primary" style="width: 100%; margin-top: 10px;" onclick="saveEmployee()"><i class="fas fa-save"></i> Save Employee</button>
+            <button class="btn-primary" style="width: 100%; margin-top: 10px;" onclick="saveEmployee()">Save Employee</button>
             
             <h4 style="margin-top:20px; color:#475569; font-size: 13px; margin-bottom: 10px;">Directory Overview</h4>
             <div class="table-wrapper" style="max-height: 180px;">
@@ -122,19 +105,13 @@
         </div>
 
         <div class="panel wide-panel">
-            <h3><i class="fas fa-map-marked-alt"></i> Dynamic Geofencing & Employee Tracker</h3>
+            <h3><i class="fas fa-map-marked-alt"></i> Dynamic Geofencing & Tracker</h3>
             <div id="map"></div>
             <div class="flex-row">
                 <input type="text" id="locName" placeholder="Clinic Name" style="margin:0;">
-                <input type="text" id="locLat" placeholder="Latitude" readonly style="margin:0; background:#f1f5f9;">
-                <input type="text" id="locLng" placeholder="Longitude" readonly style="margin:0; background:#f1f5f9;">
-                <button class="btn-success" onclick="saveClinic()" style="min-width: 140px;"><i class="fas fa-map-pin"></i> Drop Pin</button>
-            </div>
-            <div class="table-wrapper" style="max-height: 130px; margin-top: 15px;">
-                <table id="locationTable">
-                    <thead><tr><th>Clinic Name</th><th>Coordinates</th><th>Action</th></tr></thead>
-                    <tbody></tbody>
-                </table>
+                <input type="text" id="locLat" placeholder="Lat" readonly style="margin:0; background:#f1f5f9;">
+                <input type="text" id="locLng" placeholder="Lng" readonly style="margin:0; background:#f1f5f9;">
+                <button class="btn-success" onclick="saveClinic()" style="min-width: 140px;">Drop Pin</button>
             </div>
         </div>
 
@@ -142,32 +119,18 @@
             <h3><i class="fas fa-chart-line"></i> Advanced Salary Engine & Reports</h3>
             
             <div class="flex-row" style="background: #f8fafc; padding: 15px; border-radius: 10px; flex-wrap: wrap;">
-                <div>
-                    <label style="font-size: 11px; font-weight:bold; color:#64748b;">From Date:</label>
-                    <input type="date" id="repFrom" style="margin:0;">
-                </div>
-                <div>
-                    <label style="font-size: 11px; font-weight:bold; color:#64748b;">To Date:</label>
-                    <input type="date" id="repTo" style="margin:0;">
-                </div>
-                <div style="flex-grow: 1;">
-                    <label style="font-size: 11px; font-weight:bold; color:#64748b;">Filter Employee:</label>
-                    <select id="repEmpFilter" style="margin:0;"><option value="">-- All Staff --</option></select>
-                </div>
+                <div><label style="font-size: 11px; font-weight:bold; color:#64748b;">From Date:</label><input type="date" id="repFrom" style="margin:0;"></div>
+                <div><label style="font-size: 11px; font-weight:bold; color:#64748b;">To Date:</label><input type="date" id="repTo" style="margin:0;"></div>
+                <div style="flex-grow: 1;"><label style="font-size: 11px; font-weight:bold; color:#64748b;">Filter Employee:</label><select id="repEmpFilter" style="margin:0;"><option value="">-- All Staff --</option></select></div>
                 <div style="display: flex; gap: 10px; margin-top: 15px;">
                     <button class="btn-primary" onclick="loadReports()"><i class="fas fa-sync"></i> Run Reports & Track Map</button>
                     <button class="btn-success" onclick="exportToExcel()"><i class="fas fa-file-excel"></i> Detailed Excel Export</button>
-                    <button class="btn-success" onclick="shareMissPunches()" style="background:#25d366;"><i class="fab fa-whatsapp"></i> Notify Missing</button>
                 </div>
             </div>
 
             <div class="table-wrapper" style="max-height: 350px; margin-top: 15px;">
                 <table id="reportTable">
-                    <thead>
-                        <tr>
-                            <th>Date</th><th>Employee ID</th><th>Total Hours</th><th>Minus Hours</th><th>Time Tag</th><th>Status</th><th>View Log</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th>Date</th><th>Emp ID</th><th>Total Hrs</th><th>Minus Hrs</th><th>Time Tag</th><th>Status</th><th>View Log</th></tr></thead>
                     <tbody></tbody>
                 </table>
             </div>
@@ -178,13 +141,12 @@
             <div class="flex-row">
                 <div class="upload-box" onclick="document.getElementById('csvFileInput').click()">
                     <i class="fas fa-cloud-upload-alt" style="font-size: 24px; color: #94a3b8; margin-bottom: 5px;"></i>
-                    <p style="font-weight: 600; color:#334155; font-size: 13px;">Upload Legacy Excel/CSV</p>
+                    <p style="font-weight: 600; color:#334155; font-size: 13px;">Upload Legacy CSV</p>
                     <input type="file" id="csvFileInput" accept=".csv" style="display:none;" onchange="handleCSVUpload(event)">
                 </div>
-                <button class="btn-outline" style="height: 100%; padding: 20px;" onclick="downloadSampleCSV()"><i class="fas fa-download"></i> Download<br>Sample CSV</button>
+                <button class="btn-outline" style="height: 100%; padding: 20px;" onclick="downloadSampleCSV()"><i class="fas fa-download"></i> Sample CSV</button>
             </div>
         </div>
-
     </div>
 
     <script>
@@ -193,34 +155,18 @@
         function initMap() {
             map = L.map('map').setView([23.0300, 72.5800], 12);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-            
             map.on('click', function(e) {
                 document.getElementById('locLat').value = e.latlng.lat.toFixed(6);
                 document.getElementById('locLng').value = e.latlng.lng.toFixed(6);
-                if(window.tempCircle) map.removeLayer(window.tempCircle);
-                window.tempCircle = L.circle([e.latlng.lat, e.latlng.lng], {
-                    color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.2, radius: 150
-                }).addTo(map);
             });
         }
 
         async function loadClinics() {
             const res = await fetch('/api/admin/locations');
             const data = await res.json();
-            const tbody = document.querySelector('#locationTable tbody');
-            if (tbody) tbody.innerHTML = '';
-            fenceCircles.forEach(c => map.removeLayer(c));
-            fenceCircles = [];
-
+            fenceCircles.forEach(c => map.removeLayer(c)); fenceCircles = [];
             data.forEach(loc => {
-                if (tbody) {
-                    tbody.innerHTML += `<tr>
-                        <td><strong>${loc.name}</strong></td>
-                        <td><small>${loc.lat}, ${loc.lng}</small></td>
-                        <td><button class="btn-danger" style="padding: 6px 12px;" onclick="deleteClinic('${loc._id}')"><i class="fas fa-trash"></i></button></td>
-                    </tr>`;
-                }
-                let c = L.circle([loc.lat, loc.lng], {color: '#10b981', fillColor: '#10b981', fillOpacity: 0.15, radius: 150}).addTo(map).bindPopup(loc.name);
+                let c = L.circle([loc.lat, loc.lng], {color: '#10b981', fillOpacity: 0.15, radius: 150}).addTo(map).bindPopup(loc.name);
                 fenceCircles.push(c);
             });
         }
@@ -229,19 +175,9 @@
             const name = document.getElementById('locName').value;
             const lat = document.getElementById('locLat').value;
             const lng = document.getElementById('locLng').value;
-            if(!name || !lat) return alert("Select location on map and provide a name.");
-            await fetch('/api/admin/locations', {
-                method: 'POST', headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({name, lat: parseFloat(lat), lng: parseFloat(lng)})
-            });
-            document.getElementById('locName').value = '';
-            loadClinics();
-        }
-
-        async function deleteClinic(id) {
-            if(!confirm("Remove this Geofence?")) return;
-            await fetch(`/api/admin/locations/${id}`, { method: 'DELETE' });
-            loadClinics();
+            if(!name || !lat) return;
+            await fetch('/api/admin/locations', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({name, lat: parseFloat(lat), lng: parseFloat(lng)})});
+            document.getElementById('locName').value = ''; loadClinics();
         }
 
         async function loadStaff() {
@@ -254,46 +190,32 @@
 
             emps.forEach(emp => {
                 globalEmployees[emp.empId] = emp; 
-                filterSelect.innerHTML += `<option value="${emp.empId}">${emp.name}</option>';
+                filterSelect.innerHTML += `<option value="${emp.empId}">${emp.name}</option>`;
                 const badge = emp.status === 'active' ? '<span class="badge b-green">Active</span>' : '<span class="badge b-red">Disabled</span>';
-                tbody.innerHTML += `<tr>
-                    <td><strong>${emp.name}</strong><br><small style="color:#64748b">${emp.empId}</small></td>
-                    <td><span style="font-size:11px; color:#64748b;">Shift:</span> <b>${emp.shiftStart || '09:00'}</b><br><span style="font-size:11px; color:#64748b;">Duty:</span> <b>${emp.dutyHours || 9}H</b></td>
-                    <td style="display:flex; gap:5px; flex-direction: column;">
-                        <button class="btn-outline" style="padding:4px 8px;" onclick="editEmp('${emp._id}','${emp.empId}','${emp.name}','${emp.password}','${emp.phone}','${emp.shiftStart}','${emp.dutyHours}')"><i class="fas fa-pen"></i> Edit</button>
-                        <button class="${emp.status==='active'?'btn-danger':'btn-success'}" style="padding:4px 8px;" onclick="toggleStatus('${emp._id}','${emp.status==='active'?'disabled':'active'}')"><i class="fas fa-power-off"></i></button>
-                    </td>
-                </tr>`;
+                tbody.innerHTML += `<tr><td><strong>${emp.name}</strong><br><small>${emp.empId}</small></td><td><b>${emp.shiftStart || '09:00'}</b> | <b>${emp.dutyHours || 9}H</b></td><td style="display:flex; gap:5px;"><button class="btn-outline" style="padding:4px 8px;" onclick="editEmp('${emp._id}','${emp.empId}','${emp.name}','${emp.password}','${emp.phone}','${emp.shiftStart}','${emp.dutyHours}')"><i class="fas fa-pen"></i></button><button class="${emp.status==='active'?'btn-danger':'btn-success'}" style="padding:4px 8px;" onclick="toggleStatus('${emp._id}','${emp.status==='active'?'disabled':'active'}')"><i class="fas fa-power-off"></i></button></td></tr>`;
             });
         }
 
         async function saveEmployee() {
             const data = {
-                id: document.getElementById('empDbId').value || undefined,
-                empId: document.getElementById('empId').value,
-                name: document.getElementById('empName').value,
-                password: document.getElementById('empPassword').value,
-                phone: document.getElementById('empPhone').value,
-                shiftStart: document.getElementById('empShift').value,
+                id: document.getElementById('empDbId').value || undefined, empId: document.getElementById('empId').value,
+                name: document.getElementById('empName').value, password: document.getElementById('empPassword').value,
+                phone: document.getElementById('empPhone').value, shiftStart: document.getElementById('empShift').value,
                 dutyHours: document.getElementById('empHours').value
             };
-            if(!data.empId || !data.name) return alert("Fill required fields!");
+            if(!data.empId || !data.name) return;
             await fetch('/api/admin/employees', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
-            ['empDbId','empId','empName','empPassword','empPhone'].forEach(id => document.getElementById(id).value = '');
-            document.getElementById('empShift').value = '09:00'; document.getElementById('empHours').value = '9';
             loadStaff();
         }
 
         function editEmp(id, empId, name, pass, phone, shift, hours) {
             document.getElementById('empDbId').value = id; document.getElementById('empId').value = empId;
             document.getElementById('empName').value = name; document.getElementById('empPassword').value = pass;
-            document.getElementById('empPhone').value = phone; document.getElementById('empShift').value = shift || '09:00';
-            document.getElementById('empHours').value = hours || 9;
+            document.getElementById('empPhone').value = phone; document.getElementById('empShift').value = shift; document.getElementById('empHours').value = hours;
         }
 
         async function toggleStatus(id, status) {
-            await fetch('/api/admin/employees/status', { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({id, status}) });
-            loadStaff();
+            await fetch('/api/admin/employees/status', { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({id, status}) }); loadStaff();
         }
 
         async function loadLiveWorkforce() {
@@ -307,63 +229,32 @@
 
             todayPunches.forEach(p => {
                 let statusHtml = ''; let firstIn = '-'; let lastOut = '-';
-                
                 const ptIn = p.punches && p.punches.find(x => x.type === 'IN');
                 const ptOut = p.punches && [...p.punches].reverse().find(x => x.type === 'OUT');
-                
-                if (ptIn) firstIn = ptIn.time;
-                if (ptOut) lastOut = ptOut.time;
+                if (ptIn) firstIn = ptIn.time; if (ptOut) lastOut = ptOut.time;
 
                 const lastPt = p.punches && p.punches.length > 0 ? p.punches[p.punches.length - 1] : null;
-                
                 if (lastPt) {
-                    if (lastPt.type === 'IN') {
-                        statusHtml = `<span class="badge b-blue"><i class="live-dot"></i> Online</span>`;
-                    } else {
-                        statusHtml = `<span class="badge b-green">Shift Complete</span>`;
-                    }
-                } else {
-                    statusHtml = `<span class="badge b-red">Absent</span>`;
-                }
+                    if (lastPt.type === 'IN') statusHtml = `<span class="badge b-blue">Online</span>`;
+                    else statusHtml = `<span class="badge b-green">Shift Complete</span>`;
+                } else statusHtml = `<span class="badge b-red">Absent</span>`;
 
-                let errorHtml = p.errorLogs ? `<div class="error-log"><i class="fas fa-exclamation-triangle"></i> ${p.errorLogs}</div>` : `<span style="color:#cbd5e1; font-size:12px;">No issues</span>`;
-                let remarkHtml = p.remark ? `<div class="remark-text"><i class="fas fa-comment-dots"></i> ${p.remark}</div>` : `<span style="color:#cbd5e1; font-size:12px;">-</span>`;
-
-                tbody.innerHTML += `<tr>
-                    <td><strong>${p.empId}</strong></td>
-                    <td>${statusHtml}</td>
-                    <td><b style="color:#10b981;">${firstIn}</b></td>
-                    <td><b style="color:#ef4444;">${lastOut}</b></td>
-                    <td>${remarkHtml}</td>
-                    <td>${errorHtml}</td>
-                </tr>`;
+                let errorHtml = p.errorLogs ? `<div class="error-log">${p.errorLogs}</div>` : `-`;
+                tbody.innerHTML += `<tr><td><strong>${p.empId}</strong></td><td>${statusHtml}</td><td><b style="color:#10b981;">${firstIn}</b></td><td><b style="color:#ef4444;">${lastOut}</b></td><td>${errorHtml}</td></tr>`;
             });
         }
 
         async function loadReports() {
             loadLiveWorkforce(); 
-
-            const from = document.getElementById('repFrom').value;
-            const to = document.getElementById('repTo').value;
-            const empId = document.getElementById('repEmpFilter').value;
-
-            let url = `/api/admin/reports?`;
-            if(from && to) url += `from=${from}&to=${to}&`;
-            if(empId) url += `empId=${empId}`;
-
-            const res = await fetch(url);
+            const from = document.getElementById('repFrom').value; const to = document.getElementById('repTo').value; const empId = document.getElementById('repEmpFilter').value;
+            const res = await fetch(`/api/admin/reports?from=${from}&to=${to}&empId=${empId}`);
             fetchedReports = await res.json(); 
             
-            const tbody = document.querySelector('#reportTable tbody');
-            tbody.innerHTML = '';
-
-            // CLEAR OLD MAP MARKERS
-            empMarkers.forEach(m => map.removeLayer(m));
-            empMarkers = [];
+            const tbody = document.querySelector('#reportTable tbody'); tbody.innerHTML = '';
+            empMarkers.forEach(m => map.removeLayer(m)); empMarkers = [];
 
             fetchedReports.forEach((p, idx) => {
                 let empInfo = globalEmployees[p.empId] || { shiftStart: '09:00', dutyHours: 9 };
-                
                 let totalMs = 0;
                 if(p.punches && p.punches.length > 0) {
                     for (let i = 0; i < p.punches.length; i++) {
@@ -375,37 +266,21 @@
                 
                 let totalHrs = (totalMs / 3600000).toFixed(2);
                 let minusHrs = totalHrs < empInfo.dutyHours ? (empInfo.dutyHours - totalHrs).toFixed(2) : 0;
-
                 let firstIn = p.punches ? p.punches.find(x => x.type === 'IN') : null;
-                let timeTag = '-';
-                if(firstIn && firstIn.time > empInfo.shiftStart) {
-                    timeTag = `<span class="badge b-red">Late Punch</span>`;
-                } else if(firstIn) {
-                    timeTag = `<span class="badge b-green">On Time</span>`;
-                }
-
+                let timeTag = (firstIn && firstIn.time > empInfo.shiftStart) ? `<span class="badge b-red">Late Punch</span>` : `<span class="badge b-green">On Time</span>`;
+                if(!firstIn) timeTag = '-';
                 let badge = p.status === 'Present' ? 'b-green' : (p.status === 'Half Day' ? 'b-orange' : 'b-red');
 
-                tbody.innerHTML += `<tr>
-                    <td>${p.date}</td>
-                    <td><strong>${p.empId}</strong></td>
-                    <td><b>${totalHrs > 0 ? totalHrs + ' Hrs' : '-'}</b></td>
-                    <td class="text-danger">${minusHrs > 0 ? '-' + minusHrs + ' Hrs' : '-'}</td>
-                    <td>${timeTag}</td>
-                    <td><span class="badge ${badge}">${p.status}</span></td>
-                    <td><button class="btn-warning" style="padding:6px 12px;" onclick="openDetailsWindow(${idx})"><i class="fas fa-eye"></i></button></td>
-                </tr>`;
+                tbody.innerHTML += `<tr><td>${p.date}</td><td><strong>${p.empId}</strong></td><td><b>${totalHrs > 0 ? totalHrs + ' Hrs' : '-'}</b></td><td class="text-danger">${minusHrs > 0 ? '-' + minusHrs + ' Hrs' : '-'}</td><td>${timeTag}</td><td><span class="badge ${badge}">${p.status}</span></td><td><button class="btn-warning" style="padding:6px 12px;" onclick="openDetailsWindow(${idx})"><i class="fas fa-eye"></i></button></td></tr>`;
 
-                // ANIMATED ZOOM-SAFE MAP MARKERS WITH ANCHORED OFFSETS
+                // ANIMATED MAP MARKERS WITH ZOOM SAFE ANCHORS
                 if(p.punches && p.punches.length > 0) {
                     p.punches.forEach(pt => {
                         if (pt.lat && pt.lng) {
                             let pulseClass = pt.type === 'IN' ? 'pulse-marker-in' : 'pulse-marker-out';
                             let animatedIcon = L.divIcon({ className: pulseClass, iconSize: [12, 12], iconAnchor: [6, 6] });
                             let markerLat = pt.lat; let markerLng = pt.lng;
-                            
-                            // Tiny offset parsing to split perfect overlap configurations
-                            if (pt.type === 'OUT') { markerLat += 0.00015; markerLng += 0.00015; }
+                            if (pt.type === 'OUT') { markerLat += 0.00015; markerLng += 0.00015; } // Offset Out slightly
 
                             let marker = L.marker([markerLat, markerLng], { icon: animatedIcon }).addTo(map)
                                 .bindPopup(`<b>${p.empId}</b><br><b style="color:${pt.type==='IN'?'#10b981':'#ef4444'}">${pt.type}</b>: ${pt.time}<br>Loc: ${pt.location || 'Unknown'}`);
@@ -418,37 +293,23 @@
 
         function openDetailsWindow(idx) {
             const report = fetchedReports[idx];
-            const tbody = document.querySelector('#modalTable tbody');
-            tbody.innerHTML = '';
-            
+            const tbody = document.querySelector('#modalTable tbody'); tbody.innerHTML = '';
             if(report.punches && report.punches.length > 0) {
                 report.punches.forEach(pt => {
                     let icon = pt.type === 'IN' ? '🟢 IN' : '🔴 OUT';
-                    tbody.innerHTML += `<tr>
-                        <td><b>${icon}</b></td>
-                        <td>${pt.time}</td>
-                        <td>${pt.location || 'Unknown'} <small>(${pt.lat}, ${pt.lng})</small></td>
-                    </tr>`;
+                    tbody.innerHTML += `<tr><td><b>${icon}</b></td><td>${pt.time}</td><td>${pt.location || 'Unknown'} <small>(${pt.lat}, ${pt.lng})</small></td></tr>`;
                 });
-            } else {
-                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#94a3b8;">No records found.</td></tr>`;
             }
             document.getElementById('punchModal').style.display = 'flex';
         }
 
-        document.getElementById('punchModal').addEventListener('click', function(e) {
-            if(e.target === this) closeModal();
-        });
+        function closeModal() { document.getElementById('punchModal').style.display = 'none'; }
 
-        function closeModal() {
-            document.getElementById('punchModal').style.display = 'none';
-        }
-
-        // COMPLEX STRUCTURE EXCEL WRITER SCRIPT
+        // EXCEL EXPORT SCRIPT (Detailed Logs + Location + Timings included)
         function exportToExcel() {
             if(!fetchedReports || fetchedReports.length === 0) return alert("No reports to export! Run report first.");
             
-            let csvContent = "Date,Employee ID,Name,Shift Start,Expected Duty Hrs,Total Worked Hrs,Minus Hrs,Status,Time Tag,Detailed Segment Punch Logs (Action-Time-Branch Location)\n";
+            let csvContent = "Date,Employee ID,Name,Shift,Duty Hrs,Total Worked Hrs,Minus Hrs,Status,Time Tag,Detailed Punch Logs (Action-Time-Location)\n";
             
             fetchedReports.forEach(p => {
                 let empInfo = globalEmployees[p.empId] || { name: 'Unknown', shiftStart: '09:00', dutyHours: 9 };
@@ -459,8 +320,8 @@
                         if (p.punches[i].type === 'IN' && p.punches[i+1] && p.punches[i+1].type === 'OUT') {
                             totalMs += (new Date(`1970-01-01T${p.punches[i+1].time}Z`) - new Date(`1970-01-01T${p.punches[i].time}Z`));
                         }
-                        let branchLoc = p.punches[i].location ? p.punches[i].location : 'Unknown Branch';
-                        logDetails.push(`${p.punches[i].type} at ${p.punches[i].time} (${branchLoc})`);
+                        let locName = p.punches[i].location ? p.punches[i].location : 'Unknown Loc';
+                        logDetails.push(`${p.punches[i].type} at ${p.punches[i].time} (${locName})`);
                     }
                 }
                 
@@ -478,70 +339,16 @@
             let link = document.createElement("a");
             let url = URL.createObjectURL(blob);
             link.setAttribute("href", url);
-            link.setAttribute("download", `Airmed_Detailed_Attendance_${new Date().toISOString().split('T')[0]}.csv`);
+            link.setAttribute("download", "Airmed_Detailed_HR_Report.csv");
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
 
-        function downloadSampleCSV() {
-            const csvData = "empId,date,entryTime,exitTime,status,entryLat,entryLng,exitLat,exitLng\nAIRMED-001,2026-06-02,09:00:00,18:00:00,Present,23.0300,72.5800,23.0300,72.5800";
-            const blob = new Blob([csvData], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a'); a.href = url; a.download = 'Airmed_Sample_Upload.csv'; a.click();
-        }
-
-        function handleCSVUpload(event) {
-            const file = event.target.files[0];
-            if(!file) return;
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                const text = e.target.result;
-                const rows = text.split('\n').filter(r => r.trim() !== '');
-                const payload = [];
-                for(let i=1; i<rows.length; i++) {
-                    const c = rows[i].split(',');
-                    if(c.length >= 5) {
-                        payload.push({
-                            empId: c[0], date: c[1], entryTime: c[2], exitTime: c[3], status: c[4],
-                            entryLat: c[5]||null, entryLng: c[6]||null, exitLat: c[7]||null, exitLng: c[8]||null
-                        });
-                    }
-                }
-                try {
-                    await fetch('/api/admin/bulk-punch', {
-                        method: 'POST', headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({ punches: payload })
-                    });
-                    alert(`Upload Success! Imported ${payload.length} records.`);
-                    loadStaff(); loadReports();
-                } catch(err) { alert("Upload failed."); }
-            };
-            reader.readAsText(file);
-        }
-
-        function shareMissPunches() {
-            if(!window.currentReportData || window.currentReportData.length === 0) return alert("Run reports first!");
-            let missPunches = window.currentReportData.filter(p => p.status === "Miss Punch" || p.status === "Half Day");
-            if(missPunches.length === 0) return alert("No missing punches found in this date range.");
-
-            let message = `*Airmed Lab - Attendance Alert*\n\n`;
-            missPunches.forEach((p, idx) => {
-                message += `${idx+1}. Emp ID: ${p.empId}\n   Date: ${p.date}\n   Status: ${p.status}\n\n`;
-            });
-            message += `Kripya apni attendance verify karein.`;
-            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, '_blank');
-        }
-
         document.addEventListener('DOMContentLoaded', () => {
             initMap(); loadClinics(); loadStaff();
-            
-            const now = new Date();
-            const istDate = new Date(now.getTime() + (330 * 60000));
-            const todayStr = istDate.toISOString().split('T')[0];
-            
-            document.getElementById('repFrom').value = todayStr;
-            document.getElementById('repTo').value = todayStr;
+            const todayStr = new Date(new Date().getTime() + (330 * 60000)).toISOString().split('T')[0];
+            document.getElementById('repFrom').value = todayStr; document.getElementById('repTo').value = todayStr;
             setTimeout(loadReports, 1200); 
         });
     </script>
