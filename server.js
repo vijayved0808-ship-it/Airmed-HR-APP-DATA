@@ -13,6 +13,11 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Direct Link Routing to Employee Portal
+app.get('/', (req, res) => {
+    res.redirect('/employee.html');
+});
+
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch(err => console.log(err));
@@ -46,32 +51,32 @@ app.post('/api/punch', async (req, res) => {
     let matchedLocation = null;
     let aiAssisted = false;
 
-    // AI Intelligence Location Matching
     for (let loc of savedLocations) {
         const dist = getDistance(lat, lng, loc.lat, loc.lng);
         const safeRadius = 150; 
-        const gpsErrorMargin = accuracy || 0; // Capture phone's reported accuracy
+        const gpsErrorMargin = accuracy || 0; 
         
-        // Case 1: Direct perfect hit
         if (dist <= safeRadius) { 
             matchedLocation = loc.name;
             break;
-        } 
-        // Case 2: AI Assisted hit (Phone is drifting, but drift margin touches our circle)
-        else if (dist <= (safeRadius + gpsErrorMargin) && gpsErrorMargin <= 500) {
+        } else if (dist <= (safeRadius + gpsErrorMargin) && gpsErrorMargin <= 500) {
             matchedLocation = loc.name;
             aiAssisted = true;
             break;
         }
     }
 
-    const today = new Date().toISOString().split('T')[0];
-    const nowTime = new Date().toTimeString().split(' ')[0];
-    let punchRecord = await Punch.findOne({ empId, date: today });
+    // TIMEZONE FIX: Convert Server UTC Time to IST (+5:30)
+    const now = new Date();
+    const istOffset = 330 * 60000; // 5 hours 30 mins in milliseconds
+    const istDate = new Date(now.getTime() + istOffset);
+    
+    const today = istDate.toISOString().split('T')[0];
+    const nowTime = istDate.toISOString().split('T')[1].substring(0, 8); 
 
+    let punchRecord = await Punch.findOne({ empId, date: today });
     let finalRemark = remark ? `${type}: ${remark}` : null;
 
-    // Rejected Punch (Out of range entirely)
     if (!matchedLocation) {
         const errorMsg = `🚨 Rejected Attempt (${type} at ${nowTime}). Out of geofence.`;
         if (punchRecord) {
@@ -87,7 +92,6 @@ app.post('/api/punch', async (req, res) => {
 
     let aiLogMsg = aiAssisted ? `🤖 AI Approved (${type}): GPS signal drifting.` : null;
 
-    // Processing Valid Punch
     if (type === 'IN') {
         if (punchRecord && punchRecord.entryTime) return res.status(400).json({ success: false, message: "Already Punched IN today." });
         if (!punchRecord) {
@@ -105,13 +109,16 @@ app.post('/api/punch', async (req, res) => {
         if(finalRemark) punchRecord.remark = punchRecord.remark ? punchRecord.remark + ' | ' + finalRemark : finalRemark;
         if(aiLogMsg) punchRecord.errorLogs = punchRecord.errorLogs ? punchRecord.errorLogs + ' | ' + aiLogMsg : aiLogMsg;
         
-        const hours = (new Date(`1970-01-01T${nowTime}Z`) - new Date(`1970-01-01T${punchRecord.entryTime}Z`)) / (1000 * 60 * 60);
+        // Calculate Hours correctly
+        const entryDate = new Date(`1970-01-01T${punchRecord.entryTime}Z`);
+        const exitDate = new Date(`1970-01-01T${nowTime}Z`);
+        const hours = (exitDate - entryDate) / (1000 * 60 * 60);
         punchRecord.status = hours >= 4 ? "Present" : "Half Day";
     }
 
     await punchRecord.save();
-    const successMsg = aiAssisted ? `Punched ${type} Successfully (AI Assisted due to weak GPS)` : `Punched ${type} at ${matchedLocation} (${nowTime})`;
-    res.json({ success: true, message: successMsg });
+    const successMsg = aiAssisted ? `Punched ${type} Successfully (AI Assisted due to weak GPS)` : `Punched ${type} at ${matchedLocation}`;
+    res.json({ success: true, message: successMsg, time: nowTime });
 });
 
 app.get('/api/employee/history', async (req, res) => {
@@ -180,13 +187,7 @@ app.post('/api/admin/bulk-punch', async (req, res) => {
         for (let p of punches) {
             await Punch.findOneAndUpdate(
                 { empId: p.empId, date: p.date }, 
-                { 
-                    $set: {
-                        entryTime: p.entryTime,
-                        exitTime: p.exitTime,
-                        status: p.status
-                    }
-                }, 
+                { $set: { entryTime: p.entryTime, exitTime: p.exitTime, status: p.status } }, 
                 { upsert: true, new: true }
             );
         }
