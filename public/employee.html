@@ -4,38 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Airmed Lab - Employee Portal</title>
+
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#1e3a8a">
+
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f8; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .container { background: white; width: 100%; max-width: 400px; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; }
-        .logo { font-size: 24px; font-weight: bold; color: #1e3a8a; margin-bottom: 20px; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        .container { background: white; width: 100%; max-width: 400px; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; margin: 15px; }
+        .logo { font-size: 26px; font-weight: 900; color: #1e3a8a; margin-bottom: 20px; letter-spacing: 1px; }
+        input { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; font-size: 16px; background-color: #f8fafc; }
+        input:focus { outline: none; border-color: #2563eb; background-color: #fff; }
         button { width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; color: white; margin-top: 10px; }
+        
         .btn-login { background-color: #2563eb; }
+        .btn-login:hover { background-color: #1d4ed8; }
         .btn-in { background-color: #10b981; }
+        .btn-in:hover { background-color: #059669; }
         .btn-out { background-color: #f59e0b; }
+        .btn-out:hover { background-color: #d97706; }
         .btn-logout { background-color: #ef4444; margin-top: 30px; }
+        .btn-logout:hover { background-color: #dc2626; }
+        
+        /* Install Button Styling */
+        .btn-install { background-color: #8b5cf6; margin-bottom: 20px; display: none; box-shadow: 0 4px 6px rgba(139, 92, 246, 0.3); }
+        .btn-install:hover { background-color: #7c3aed; }
+        
         #dashboard { display: none; }
-        .status { margin-top: 15px; font-size: 14px; color: #64748b; }
+        .status { margin-top: 15px; font-size: 14px; color: #64748b; font-weight: 600; background: #f1f5f9; padding: 10px; border-radius: 6px; }
+        .error-text { color: #ef4444; margin-top: 10px; display: none; font-size: 14px; font-weight: 600; }
     </style>
 </head>
 <body>
 
     <div class="container" id="loginBox">
         <div class="logo">Airmed Lab</div>
-        <h3>Employee Login</h3>
+        
+        <button id="installAppBtn" class="btn-install">📲 Install App on Phone</button>
+        
+        <h3 style="color: #334155; margin-bottom: 20px;">Employee Login</h3>
         <input type="text" id="empId" placeholder="Employee ID (e.g. AIRMED-001)">
         <input type="password" id="password" placeholder="PIN/Password">
         <button class="btn-login" onclick="login()">Login</button>
-        <div id="loginError" style="color: red; margin-top: 10px; display: none;"></div>
+        <div id="loginError" class="error-text"></div>
     </div>
 
     <div class="container" id="dashboard">
         <div class="logo">Airmed Lab</div>
-        <h3 id="welcomeText">Welcome</h3>
-        <p class="status" id="gpsStatus">Fetching GPS Location...</p>
+        <h3 id="welcomeText" style="color: #334155;">Welcome</h3>
         
-        <button class="btn-in" onclick="punch('IN')">PUNCH IN (Start Day)</button>
-        <button class="btn-out" onclick="punch('OUT')">PUNCH OUT (End Day)</button>
+        <p class="status" id="gpsStatus">⏳ Fetching GPS Location...</p>
+        
+        <div style="margin-top: 25px;">
+            <button class="btn-in" onclick="punch('IN')">PUNCH IN (Start Day)</button>
+            <button class="btn-out" onclick="punch('OUT')">PUNCH OUT (End Day)</button>
+        </div>
         
         <button class="btn-logout" onclick="logout()">Logout</button>
     </div>
@@ -44,28 +66,42 @@
         let currentLat = null;
         let currentLng = null;
 
-        // Auto-fetch GPS
+        // ====== GPS LOGIC ======
         function getGPS() {
+            document.getElementById('gpsStatus').innerHTML = "⏳ Fetching GPS Location...";
+            document.getElementById('gpsStatus').style.color = "#64748b";
+            
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
                         currentLat = position.coords.latitude;
                         currentLng = position.coords.longitude;
-                        document.getElementById('gpsStatus').innerText = `📍 GPS Active: ${currentLat.toFixed(4)}, ${currentLng.toFixed(4)}`;
-                        document.getElementById('gpsStatus').style.color = "green";
+                        document.getElementById('gpsStatus').innerHTML = `📍 GPS Active<br><small>${currentLat.toFixed(5)}, ${currentLng.toFixed(5)}</small>`;
+                        document.getElementById('gpsStatus').style.color = "#059669";
+                        document.getElementById('gpsStatus').style.background = "#d1fae5";
                     },
                     (error) => {
-                        document.getElementById('gpsStatus').innerText = "⚠️ Please enable GPS/Location access!";
-                        document.getElementById('gpsStatus').style.color = "red";
+                        document.getElementById('gpsStatus').innerHTML = "⚠️ Please enable High Accuracy GPS!";
+                        document.getElementById('gpsStatus').style.color = "#dc2626";
+                        document.getElementById('gpsStatus').style.background = "#fee2e2";
                     },
-                    { enableHighAccuracy: true }
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 } // Ensures fresh coordinates
                 );
+            } else {
+                document.getElementById('gpsStatus').innerHTML = "⚠️ GPS not supported on this device.";
             }
         }
 
+        // ====== API LOGIC ======
         async function login() {
-            const empId = document.getElementById('empId').value;
-            const password = document.getElementById('password').value;
+            const empId = document.getElementById('empId').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const btn = document.querySelector('.btn-login');
+            
+            if(!empId || !password) return showLoginError("Please enter ID and Password");
+
+            btn.innerText = "Logging in...";
+            btn.disabled = true;
             
             try {
                 const res = await fetch('/api/login', {
@@ -77,23 +113,24 @@
                 
                 if (data.success) {
                     localStorage.setItem('empId', data.empId);
-                    document.getElementById('welcomeText').innerText = `Welcome, ${data.name}`;
-                    document.getElementById('loginBox').style.display = 'none';
-                    document.getElementById('dashboard').style.display = 'block';
-                    getGPS(); // Start fetching GPS once logged in
+                    localStorage.setItem('empName', data.name);
+                    showDashboard(data.name);
                 } else {
-                    document.getElementById('loginError').innerText = data.message;
-                    document.getElementById('loginError').style.display = 'block';
+                    showLoginError(data.message);
                 }
             } catch (err) {
-                alert("Server connection error.");
+                showLoginError("Server connection error. Try again.");
+            } finally {
+                btn.innerText = "Login";
+                btn.disabled = false;
             }
         }
 
         async function punch(type) {
             const empId = localStorage.getItem('empId');
             if (!currentLat || !currentLng) {
-                alert("GPS Location not found. Please enable location services and wait a moment.");
+                alert("GPS Location not found. Please wait a moment or turn your GPS Off and On again.");
+                getGPS(); 
                 return;
             }
 
@@ -111,25 +148,78 @@
                     alert(`❌ Error: ${data.message}`);
                 }
             } catch (err) {
-                alert("Failed to submit punch.");
+                alert("Failed to submit punch. Please check your internet connection.");
             }
         }
 
         function logout() {
             localStorage.removeItem('empId');
+            localStorage.removeItem('empName');
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('loginBox').style.display = 'block';
             document.getElementById('empId').value = '';
             document.getElementById('password').value = '';
+            document.getElementById('loginError').style.display = 'none';
+            currentLat = null;
+            currentLng = null;
         }
 
-        // Auto-login check
-        if (localStorage.getItem('empId')) {
+        // ====== HELPER FUNCTIONS ======
+        function showLoginError(msg) {
+            document.getElementById('loginError').innerText = msg;
+            document.getElementById('loginError').style.display = 'block';
+        }
+
+        function showDashboard(name) {
             document.getElementById('loginBox').style.display = 'none';
             document.getElementById('dashboard').style.display = 'block';
-            document.getElementById('welcomeText').innerText = `Employee ID: ${localStorage.getItem('empId')}`;
-            getGPS();
+            document.getElementById('welcomeText').innerText = `Welcome, ${name}`;
+            getGPS(); // Fetch GPS immediately when dashboard loads
         }
+
+        // ====== INITIALIZATION & AUTO-LOGIN ======
+        const savedEmpId = localStorage.getItem('empId');
+        const savedEmpName = localStorage.getItem('empName') || savedEmpId;
+        if (savedEmpId) {
+            showDashboard(savedEmpName);
+        }
+
+        // ====== PWA INSTALL LOGIC ======
+        let deferredPrompt;
+        const installBtn = document.getElementById('installAppBtn');
+
+        // 1. Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').then(reg => {
+                    console.log('ServiceWorker registered:', reg.scope);
+                }).catch(err => {
+                    console.log('ServiceWorker registration failed:', err);
+                });
+            });
+        }
+
+        // 2. Catch the install prompt and show button
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'block';
+        });
+
+        // 3. Handle Install Button Click
+        installBtn.addEventListener('click', async () => {
+            installBtn.style.display = 'none'; // Hide button after click
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`User response to the install prompt: ${outcome}`);
+            deferredPrompt = null;
+        });
+
+        // 4. Listen for successful install
+        window.addEventListener('appinstalled', () => {
+            console.log('App completely installed');
+            installBtn.style.display = 'none';
+        });
     </script>
 </body>
 </html>
