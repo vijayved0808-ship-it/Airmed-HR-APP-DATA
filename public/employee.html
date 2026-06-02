@@ -3,339 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Airmed Lab - Employee Portal</title>
-    
+    <title>Airmed Lab - Employee App</title>
     <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#1e3a8a">
+    <meta name="theme-color" content="#ffffff">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Noto+Sans+Devanagari&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: #f8fafc; display: flex; justify-content: center; align-items: center; min-height: 100vh; color: #0f172a; padding: 20px; }
         
-        body { 
-            background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%); 
-            display: flex; justify-content: center; align-items: center; min-height: 100vh; 
-            color: #1e293b; padding: 15px; overflow-x: hidden;
-        }
-
-        .container { 
-            background: rgba(255, 255, 255, 0.95); 
-            backdrop-filter: blur(10px);
-            width: 100%; max-width: 420px; padding: 35px 25px; 
-            border-radius: 24px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.05), 0 5px 15px rgba(0,0,0,0.03); 
-            text-align: center; 
-            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            border: 1px solid rgba(255,255,255,0.8);
-            position: relative;
-        }
-
-        @keyframes slideUp { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
-
-        .logo { font-size: 28px; font-weight: 800; color: #1e3a8a; margin-bottom: 25px; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .logo i { color: #3b82f6; font-size: 32px; animation: heartbeat 2s infinite; }
-        @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-
-        h3 { color: #334155; margin-bottom: 20px; font-weight: 600; font-size: 18px; }
-
+        .app-container { background: #ffffff; width: 100%; max-width: 400px; padding: 40px 30px; border-radius: 24px; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.1); border: 1px solid #f1f5f9; text-align: center; }
+        
+        .logo { font-size: 26px; font-weight: 700; color: #1e3a8a; margin-bottom: 30px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        
         .input-group { position: relative; margin-bottom: 15px; }
-        .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
+        .input-group i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #64748b; }
+        input, textarea { width: 100%; padding: 16px 16px 16px 45px; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 15px; background: #f8fafc; transition: 0.2s; outline: none; }
+        input:focus, textarea:focus { border-color: #3b82f6; background: #ffffff; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+        textarea { padding-left: 16px; resize: none; margin-bottom: 10px; }
         
-        input, textarea { 
-            width: 100%; padding: 14px 14px 14px 45px; 
-            border: 2px solid #e2e8f0; border-radius: 12px; 
-            font-size: 15px; background-color: #f8fafc; transition: all 0.3s ease; 
-        }
-        textarea { padding-left: 14px; resize: none; margin-bottom: 10px; }
-        input:focus, textarea:focus { outline: none; border-color: #3b82f6; background-color: #fff; box-shadow: 0 0 0 4px rgba(59,130,246,0.1); }
-
-        button { 
-            width: 100%; padding: 15px; border: none; border-radius: 12px; 
-            font-size: 15px; font-weight: 600; cursor: pointer; 
-            transition: all 0.3s ease; color: white; margin-top: 10px; 
-            display: flex; justify-content: center; align-items: center; gap: 8px;
-        }
-        button:active { transform: scale(0.96); }
-
-        .btn-login { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); box-shadow: 0 4px 12px rgba(37,99,235,0.3); margin-top: 5px; }
-        .btn-in { background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 4px 12px rgba(16,185,129,0.3); }
-        .btn-out { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); box-shadow: 0 4px 12px rgba(245,158,11,0.3); }
-        .btn-history { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; margin-top: 25px; }
-        .btn-logout { background: transparent; color: #ef4444; margin-top: 5px; font-size: 14px; }
+        button { width: 100%; padding: 16px; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.2s; color: white; display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 12px; }
+        button:active { transform: scale(0.98); }
         
-        /* PREMIUM NATIVE MOBILE INSTALL BUTTON */
-        .btn-install-app { 
-            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); 
-            font-weight: bold; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); 
-            margin-bottom: 25px; display: flex; animation: pulseGlow 2s infinite; 
-        }
-        @keyframes pulseGlow {
-            0% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(139, 92, 246, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
-        }
-
+        .btn-install { background: #1e293b; color: white; margin-bottom: 30px; display: none; }
+        .btn-login { background: #3b82f6; box-shadow: 0 4px 12px rgba(59,130,246,0.3); }
+        .btn-in { background: #10b981; box-shadow: 0 4px 12px rgba(16,185,129,0.3); }
+        .btn-out { background: #ef4444; box-shadow: 0 4px 12px rgba(239,68,68,0.3); }
+        .btn-history { background: white; border: 1px solid #cbd5e1; color: #475569; }
+        
         #dashboard, #historySection { display: none; }
+        .status-badge { background: #f8fafc; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; font-size: 13px; font-weight: 500; margin-bottom: 20px; display: inline-flex; align-items: center; gap: 8px; }
+        .dot { height: 10px; width: 10px; background: #10b981; border-radius: 50%; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.7); } 70% { box-shadow: 0 0 0 6px rgba(16,185,129,0); } }
+
+        .stats-grid { display: flex; gap: 10px; margin-bottom: 20px; }
+        .stat-card { flex: 1; background: white; padding: 15px; border-radius: 16px; font-size: 12px; font-weight: 600; border: 1px solid #e2e8f0; }
         
-        .status { margin: 15px 0 20px 0; font-size: 13px; font-weight: 600; background: #f8fafc; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; flex-direction: column; align-items: center; gap: 5px; transition: 0.3s; }
-        .live-dot { height: 10px; width: 10px; background-color: #10b981; border-radius: 50%; display: inline-block; animation: dotPulse 1.5s infinite; }
-        @keyframes dotPulse { 0% { transform: scale(0.8); opacity: 0.5; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(0.8); opacity: 0.5; } }
-        
-        .stats-grid { display: flex; gap: 12px; margin-bottom: 20px; }
-        .stat-card { flex: 1; background: #ffffff; padding: 15px 10px; border-radius: 16px; font-size: 12px; font-weight: 600; box-shadow: 0 4px 10px rgba(0,0,0,0.04); border: 1px solid #f1f5f9; }
-        .stat-card i { font-size: 20px; margin-bottom: 8px; display: block; }
-        
-        .table-wrapper { max-height: 300px; overflow-y: auto; border-radius: 12px; border: 1px solid #e2e8f0; background: #fff; }
-        .history-table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; }
-        .history-table th { background: #f8fafc; color: #64748b; padding: 12px; position: sticky; top: 0; z-index: 10; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-        .history-table td { padding: 12px; border-bottom: 1px solid #f1f5f9; color: #334155; }
+        .table-wrapper { max-height: 300px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 12px; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; }
+        th { background: #f8fafc; color: #64748b; padding: 12px; position: sticky; top: 0; font-weight: 600; }
+        td { padding: 12px; border-bottom: 1px solid #f1f5f9; }
     </style>
 </head>
 <body>
 
-    <div class="container" id="loginBox">
+    <div class="app-container" id="loginBox">
         <div class="logo"><i class="fas fa-heartbeat"></i> Airmed Lab</div>
         
-        <button class="btn-install-app" id="mobileInstallDirectBtn" onclick="triggerInstall()">
-            <i class="fas fa-mobile-alt" style="font-size: 18px;"></i> 📲 INSTALL IN MOBILE
-        </button>
+        <button class="btn-install" id="pwaBtn" onclick="triggerInstall()"><i class="fas fa-mobile-alt"></i> Install Web App</button>
         
-        <h3>Secure Employee Login</h3>
+        <div class="input-group"><i class="fas fa-user"></i><input type="text" id="empId" placeholder="Employee ID"></div>
+        <div class="input-group"><i class="fas fa-lock"></i><input type="password" id="password" placeholder="Password"></div>
         
-        <div class="input-group">
-            <i class="fas fa-user"></i>
-            <input type="text" id="empId" placeholder="Employee ID (e.g. AIRMED-001)">
-        </div>
-        <div class="input-group">
-            <i class="fas fa-lock"></i>
-            <input type="password" id="password" placeholder="PIN/Password">
-        </div>
-        
-        <button class="btn-login" onclick="login()"><i class="fas fa-sign-in-alt"></i> Login Securely</button>
+        <button class="btn-login" onclick="login()">Login Securely</button>
     </div>
 
-    <div class="container" id="dashboard">
+    <div class="app-container" id="dashboard">
         <div class="logo"><i class="fas fa-heartbeat"></i> Airmed Lab</div>
-        <h3 id="welcomeText">Welcome</h3>
+        <h3 id="welcomeText" style="margin-bottom:10px;">Welcome</h3>
         
-        <div class="status" id="gpsStatus">
-            <span style="color:#64748b;"><i class="fas fa-spinner fa-spin"></i> Fetching Smart GPS...</span>
-        </div>
+        <div class="status-badge" id="gpsStatus"><i class="fas fa-spinner fa-spin"></i> Fetching Tracker...</div>
         
-        <div>
-            <textarea id="punchRemark" rows="2" placeholder="Any Session Remark? (Optional)"></textarea>
-            <button class="btn-in" onclick="punch('IN')"><i class="fas fa-fingerprint"></i> REGISTER PUNCH IN</button>
-            <button class="btn-out" onclick="punch('OUT')"><i class="fas fa-sign-out-alt"></i> REGISTER PUNCH OUT</button>
-        </div>
+        <textarea id="punchRemark" rows="2" placeholder="Session Remark (e.g. Visited Client X)"></textarea>
+        <button class="btn-in" onclick="punch('IN')"><i class="fas fa-fingerprint"></i> PUNCH IN</button>
+        <button class="btn-out" onclick="punch('OUT')"><i class="fas fa-sign-out-alt"></i> PUNCH OUT</button>
         
-        <button class="btn-history" onclick="loadHistory()"><i class="fas fa-history"></i> View Attendance History</button>
-        <button class="btn-logout" onclick="logout()"><i class="fas fa-power-off"></i> Logout securely</button>
+        <button class="btn-history" style="margin-top:20px;" onclick="loadHistory()"><i class="fas fa-history"></i> Logs</button>
+        <button onclick="logout()" style="background:none; color:#ef4444; border:none; margin-top:5px; padding:10px; width:auto; display:inline-block;"><i class="fas fa-power-off"></i> Logout</button>
     </div>
 
-    <div class="container" id="historySection">
-        <div class="logo"><i class="fas fa-calendar-check"></i> My Attendance</div>
-        
+    <div class="app-container" id="historySection">
+        <h3 style="margin-bottom:20px;"><i class="fas fa-calendar-check"></i> My History</h3>
         <div class="stats-grid">
-            <div class="stat-card" style="color:#10b981;">
-                <i class="fas fa-check-circle"></i>Present<br><span id="statPresent" style="font-size:20px; color:#059669;">0</span>
-            </div>
-            <div class="stat-card" style="color:#f59e0b;">
-                <i class="fas fa-exclamation-circle"></i>Missed<br><span id="statMissed" style="font-size:20px; color:#d97706;">0</span>
-            </div>
-            <div class="stat-card" style="color:#ef4444;">
-                <i class="fas fa-times-circle"></i>Errors<br><span id="statErrors" style="font-size:20px; color:#dc2626;">0</span>
-            </div>
+            <div class="stat-card" style="color:#10b981;">Present<br><span id="statPresent" style="font-size:20px;">0</span></div>
+            <div class="stat-card" style="color:#ef4444;">Missed<br><span id="statMissed" style="font-size:20px;">0</span></div>
         </div>
-
         <div class="table-wrapper">
-            <table class="history-table">
+            <table>
                 <thead><tr><th>Date</th><th>In</th><th>Out</th><th>Status</th></tr></thead>
                 <tbody id="historyBody"></tbody>
             </table>
         </div>
-        
-        <button class="btn-history" onclick="backToDashboard()"><i class="fas fa-arrow-left"></i> Back to Dashboard</button>
+        <button class="btn-history" style="margin-top:15px;" onclick="backToDashboard()">Back</button>
     </div>
 
     <script>
         let currentLat = null, currentLng = null, currentAccuracy = null;
 
-        // GPS Fetching Logic
         function getGPS() {
-            const gpsBox = document.getElementById('gpsStatus');
-            gpsBox.innerHTML = '<span style="color:#64748b;"><i class="fas fa-spinner fa-spin"></i> Fetching Smart GPS...</span>';
-            
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        currentLat = position.coords.latitude;
-                        currentLng = position.coords.longitude;
-                        currentAccuracy = position.coords.accuracy;
-
-                        let signalQuality = currentAccuracy <= 50 ? "Excellent" : (currentAccuracy <= 150 ? "Good" : "Weak (AI Assisted)");
-                        let signalColor = currentAccuracy <= 150 ? "#059669" : "#f59e0b";
-
-                        gpsBox.innerHTML = `<div style="display:flex; align-items:center; justify-content:center; gap:8px; color:${signalColor};"><i class="live-dot" style="background-color:${signalColor};"></i> GPS Active</div><small style="color:#64748b; font-weight:400;">Signal: ${signalQuality} | ±${Math.round(currentAccuracy)}m</small>`;
+                    (pos) => {
+                        currentLat = pos.coords.latitude; currentLng = pos.coords.longitude; currentAccuracy = pos.coords.accuracy;
+                        document.getElementById('gpsStatus').innerHTML = `<div class="dot"></div> GPS Locked (±${Math.round(currentAccuracy)}m)`;
                     },
-                    (error) => {
-                        gpsBox.innerHTML = `<div style="color:#dc2626;"><i class="fas fa-exclamation-triangle"></i> Enable High Accuracy GPS!</div>`;
-                    },
-                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                    (err) => { document.getElementById('gpsStatus').innerHTML = `<i class="fas fa-exclamation-triangle" style="color:red;"></i> Allow GPS`; },
+                    { enableHighAccuracy: true }
                 );
             }
         }
 
-        // Login Logic
         async function login() {
             const empId = document.getElementById('empId').value.trim();
             const password = document.getElementById('password').value.trim();
-            if(!empId || !password) return Swal.fire('Error', 'Please enter ID and Password', 'error');
+            if(!empId) return Swal.fire('Error', 'Enter ID', 'error');
             
-            const btn = document.querySelector('.btn-login');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
-            
-            try {
-                const res = await fetch('/api/login', {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ empId, password })
-                });
-                const data = await res.json();
-                if (data.success) {
-                    localStorage.setItem('empId', data.empId);
-                    localStorage.setItem('empName', data.name);
-                    showDashboard(data.name);
-                } else Swal.fire('Login Failed', data.message, 'error');
-            } catch (err) { Swal.fire('Error', 'Server connection error.', 'error'); }
-            finally { btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login Securely'; }
+            const res = await fetch('/api/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ empId, password }) });
+            const data = await res.json();
+            if (data.success) {
+                localStorage.setItem('empId', data.empId); localStorage.setItem('empName', data.name);
+                showDashboard(data.name);
+            } else Swal.fire('Failed', data.message, 'error');
         }
 
-        // Punch Logic (Multi-Punch support)
         async function punch(type) {
-            const empId = localStorage.getItem('empId');
-            const remark = document.getElementById('punchRemark').value.trim();
-
-            if (!currentLat || !currentLng) {
-                return Swal.fire('GPS Not Found', 'Ensure location is ON and wait for signal.', 'warning');
-            }
-
-            try {
-                const res = await fetch('/api/punch', {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ empId, type, lat: currentLat, lng: currentLng, accuracy: currentAccuracy, remark })
-                });
-                const data = await res.json();
-                
-                if (data.success) {
-                    // PROFESSIONAL SUCCESS POPUP
-                    Swal.fire({
-                        title: `Successfully Punched ${type}!`,
-                        html: `<b>Time:</b> ${data.time}<br><small>${data.message}</small>`,
-                        icon: 'success',
-                        confirmButtonText: 'Done',
-                        confirmButtonColor: '#10b981'
-                    });
-                    document.getElementById('punchRemark').value = '';
-                } else {
-                    Swal.fire('Punch Rejected', data.message, 'error');
-                }
-            } catch (err) { Swal.fire('Error', 'Connection Failed.', 'error'); }
+            if (!currentLat) return Swal.fire('Wait', 'GPS stabilizing...', 'warning');
+            const res = await fetch('/api/punch', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ empId: localStorage.getItem('empId'), type, lat: currentLat, lng: currentLng, accuracy: currentAccuracy, remark: document.getElementById('punchRemark').value })
+            });
+            const data = await res.json();
+            if (data.success) {
+                Swal.fire({ title: `Punched ${type}`, text: data.message, icon: 'success', confirmButtonColor: '#3b82f6' });
+                document.getElementById('punchRemark').value = '';
+            } else Swal.fire('Rejected', data.message, 'error');
         }
 
-        // History Logic (Multi-Punch display ready)
         async function loadHistory() {
-            document.getElementById('dashboard').style.display = 'none';
-            document.getElementById('historySection').style.display = 'block';
-            
-            const empId = localStorage.getItem('empId');
-            const res = await fetch(`/api/employee/history?empId=${empId}`);
+            document.getElementById('dashboard').style.display = 'none'; document.getElementById('historySection').style.display = 'block';
+            const res = await fetch(`/api/employee/history?empId=${localStorage.getItem('empId')}`);
             const data = await res.json();
             
-            let presentCount = 0, missedCount = 0, errorCount = 0;
-            const tbody = document.getElementById('historyBody');
-            tbody.innerHTML = '';
+            let presentCount = 0, missedCount = 0;
+            const tbody = document.getElementById('historyBody'); tbody.innerHTML = '';
 
             data.history.forEach(h => {
-                if(h.status === 'Present' || h.status === 'Half Day') presentCount++;
-                if(h.status === 'Miss Punch') missedCount++;
-                if(h.errorLogs) errorCount++;
-
-                // Grab first IN and last OUT for simple history display
+                if(h.status === 'Present' || h.status === 'Half Day') presentCount++; else missedCount++;
                 let firstIn = h.punches && h.punches.find(p => p.type === 'IN');
                 let lastOut = h.punches && [...h.punches].reverse().find(p => p.type === 'OUT');
-
-                const statusColor = h.status === 'Present' ? 'color:#10b981' : (h.status === 'Miss Punch' ? 'color:#ef4444' : 'color:#f59e0b');
                 
-                tbody.innerHTML += `<tr>
-                    <td style="font-weight:600;">${h.date}</td>
-                    <td>${firstIn ? firstIn.time.slice(0,5) : '-'}</td>
-                    <td>${lastOut ? lastOut.time.slice(0,5) : '-'}</td>
-                    <td style="font-weight:bold; ${statusColor}">${h.status}</td>
-                </tr>`;
+                tbody.innerHTML += `<tr><td>${h.date.substring(5)}</td><td>${firstIn ? firstIn.time.slice(0,5) : '-'}</td><td>${lastOut ? lastOut.time.slice(0,5) : '-'}</td><td><b>${h.status}</b></td></tr>`;
             });
-
-            document.getElementById('statPresent').innerText = presentCount;
-            document.getElementById('statMissed').innerText = missedCount;
-            document.getElementById('statErrors').innerText = errorCount;
+            document.getElementById('statPresent').innerText = presentCount; document.getElementById('statMissed').innerText = missedCount;
         }
 
-        function backToDashboard() {
-            document.getElementById('historySection').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'block';
-        }
-
-        function logout() {
-            localStorage.clear();
-            document.getElementById('dashboard').style.display = 'none';
-            document.getElementById('historySection').style.display = 'none';
-            document.getElementById('loginBox').style.display = 'block';
-        }
-
-        function showDashboard(name) {
-            document.getElementById('loginBox').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'block';
-            document.getElementById('welcomeText').innerText = `Welcome, ${name.split(' ')[0]}`;
-            getGPS();
-        }
-
+        function backToDashboard() { document.getElementById('historySection').style.display = 'none'; document.getElementById('dashboard').style.display = 'block'; }
+        function logout() { localStorage.clear(); location.reload(); }
+        function showDashboard(name) { document.getElementById('loginBox').style.display = 'none'; document.getElementById('dashboard').style.display = 'block'; document.getElementById('welcomeText').innerText = `Hi, ${name.split(' ')[0]}`; getGPS(); }
+        
         if (localStorage.getItem('empId')) showDashboard(localStorage.getItem('empName'));
 
-        // ==========================================
-        // PWA INSTALL SCRIPT LOGIC (FAIL-SAFE)
-        // ==========================================
+        // PWA Setup
         let deferredPrompt;
-        const installBtn = document.getElementById('mobileInstallDirectBtn');
-        
-        // 1. Register Service Worker
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js').then(() => {
-                console.log("Service Worker Active");
-            });
-        }
-        
-        // 2. Catch the Install Prompt Event
+        if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
         window.addEventListener('beforeinstallprompt', (e) => { 
-            e.preventDefault(); 
-            deferredPrompt = e; 
+            e.preventDefault(); deferredPrompt = e; 
+            document.getElementById('pwaBtn').style.display = 'flex'; 
         });
-
-        // 3. Trigger Install when Button is Clicked
         async function triggerInstall() {
             if (deferredPrompt) {
-                deferredPrompt.prompt(); 
-                deferredPrompt = null; 
+                deferredPrompt.prompt(); deferredPrompt = null; document.getElementById('pwaBtn').style.display = 'none';
             } else {
-                // FALLBACK TUTORIAL IF NATIVE PROMPT IS BLOCKED BY BROWSER
-                Swal.fire({
-                    title: 'Install the App',
-                    html: `To install this app on your phone:<br><br><b>1.</b> Tap the <b>3 dots (⋮)</b> in your Chrome browser menu (top right).<br><b>2.</b> Select <b>"Add to Home Screen"</b> or <b>"Install App"</b>.<br><b>3.</b> Confirm and you're done!`,
-                    icon: 'info',
-                    confirmButtonText: 'Got it!',
-                    confirmButtonColor: '#8b5cf6'
-                });
+                Swal.fire({ title: 'Install App', html: `1. Tap Chrome's 3-dot menu (⋮)<br>2. Select <b>Add to Home Screen</b>`, icon: 'info', confirmButtonColor: '#3b82f6' });
             }
         }
     </script>
