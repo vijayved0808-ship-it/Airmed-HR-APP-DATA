@@ -15,8 +15,25 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => res.redirect('/employee.html'));
 
+// Is code se replace karein
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB Connected"))
+  .then(async () => {
+      console.log("MongoDB Connected");
+      
+      // AUTO-CREATE DEFAULT ADMIN ACCOUNT
+      const adminExists = await Employee.findOne({ role: 'admin' });
+      if (!adminExists) {
+          await new Employee({
+              empId: 'admin',
+              name: 'System Admin',
+              password: 'admin', // Default Password
+              role: 'admin',
+              shiftStart: '00:00',
+              dutyHours: 0
+          }).save();
+          console.log("✅ Default Admin created automatically!");
+      }
+  })
   .catch(err => console.log(err));
 
 function getDistance(lat1, lon1, lat2, lon2) {
