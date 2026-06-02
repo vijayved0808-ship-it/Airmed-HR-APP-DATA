@@ -11,39 +11,76 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: #f4f7f6; color: #1e293b; overflow-x: hidden; }
+        
         .navbar { background: #ffffff; color: #1e3a8a; padding: 20px 30px; font-size: 24px; font-weight: 800; box-shadow: 0 4px 20px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
         .navbar span { font-size: 14px; font-weight: 400; color: #64748b; background: #f1f5f9; padding: 5px 12px; border-radius: 20px; }
+        
         .main-container { display: flex; flex-wrap: wrap; padding: 30px; gap: 30px; max-width: 1600px; margin: 0 auto; }
         .panel { background: #ffffff; padding: 25px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); flex: 1; min-width: 320px; transition: 0.3s ease; border: 1px solid #f1f5f9; animation: slideUp 0.6s ease-out forwards; opacity: 0; transform: translateY(20px); }
+        .panel:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.08); }
         .wide-panel { flex: 2; min-width: 650px; }
+        
         @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+        
         h3 { margin-bottom: 20px; color: #0f172a; font-weight: 600; display: flex; align-items: center; gap: 10px; font-size: 18px; }
         h3 i { color: #3b82f6; background: #eff6ff; padding: 8px; border-radius: 8px; }
-        input, select { width: 100%; padding: 10px 12px; margin: 5px 0 10px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; background: #f8fafc; transition: 0.3s; }
+        
+        input, select { width: 100%; padding: 12px 15px; margin: 8px 0 15px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 14px; background: #f8fafc; transition: 0.3s; }
         input:focus, select:focus { outline: none; border-color: #3b82f6; background: #ffffff; box-shadow: 0 0 0 4px rgba(59,130,246,0.1); }
-        button { padding: 10px 15px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; border: none; display: inline-flex; align-items: center; gap: 6px; }
-        .btn-primary { background: #3b82f6; color: white; box-shadow: 0 4px 12px rgba(59,130,246,0.3); }
+        
+        button { padding: 12px 20px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; border: none; display: inline-flex; align-items: center; gap: 8px; justify-content: center; }
+        .btn-primary { background: #3b82f6; color: white; box-shadow: 0 4px 12px rgba(59,130,246,0.3); width: 100%; }
         .btn-success { background: #10b981; color: white; box-shadow: 0 4px 12px rgba(16,185,129,0.3); }
         .btn-warning { background: #f59e0b; color: white; }
         .btn-danger { background: #ef4444; color: white; }
         .btn-outline { background: transparent; border: 2px solid #e2e8f0; color: #475569; }
+        
         #map { height: 350px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #e2e8f0; z-index: 1; }
         .table-wrapper { overflow-x: auto; border-radius: 12px; border: 1px solid #e2e8f0; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; background: white; white-space: nowrap; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #f1f5f9; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; background: white; white-space: nowrap; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #f1f5f9; }
         th { background: #f8fafc; color: #64748b; font-weight: 600; text-transform: uppercase; font-size: 11px; position: sticky; top: 0; z-index: 10;}
-        .badge { padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-block; }
+        
+        .badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block; }
         .b-green { background: #d1fae5; color: #065f46; }
         .b-red { background: #fee2e2; color: #991b1b; }
         .b-orange { background: #ffedd5; color: #9a3412; }
         .b-blue { background: #dbeafe; color: #1e40af; }
+        
         .live-dot { height: 8px; width: 8px; background-color: #10b981; border-radius: 50%; display: inline-block; margin-right: 5px; animation: pulse 1.5s infinite; }
         .error-log { color: #ef4444; font-size: 12px; background: #fee2e2; padding: 4px 8px; border-radius: 4px; margin-top: 4px; display: inline-block; }
         .remark-text { color: #8b5cf6; font-size: 12px; background: #f3e8ff; padding: 4px 8px; border-radius: 4px; margin-top: 4px; display: inline-block; font-style: italic; }
-        @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
-        .upload-box { border: 2px dashed #cbd5e1; padding: 20px; text-align: center; border-radius: 12px; background: #f8fafc; cursor: pointer; flex-grow: 1;}
-        .flex-row { display: flex; gap: 10px; align-items: center; margin-bottom: 10px;}
         .text-danger { color: #ef4444; font-weight: bold; }
+        .upload-box { border: 2px dashed #cbd5e1; padding: 30px; text-align: center; border-radius: 12px; background: #f8fafc; cursor: pointer; }
+        .flex-row { display: flex; gap: 10px; align-items: center; margin-bottom: 10px;}
+
+        @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+
+        /* PREMIUM DYNAMIC GLOWING ANIMATION FOR GREEN AND RED POINTS ON THE MAP */
+        .pulse-marker-in {
+            background: #10b981; border: 2px solid white; border-radius: 50%;
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.8);
+            animation: map-pulse-green 1.5s infinite;
+        }
+        .pulse-marker-out {
+            background: #ef4444; border: 2px solid white; border-radius: 50%;
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.8);
+            animation: map-pulse-red 1.5s infinite;
+        }
+        @keyframes map-pulse-green {
+            0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.8); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        @keyframes map-pulse-red {
+            0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.8); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        /* Premium Modal Architecture styling */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); z-index: 2000; align-items: center; justify-content: center; }
+        .modal-content { background: white; padding: 30px; border-radius: 20px; max-width: 650px; width: 90%; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid #f1f5f9; }
     </style>
 </head>
 <body>
@@ -53,13 +90,26 @@
         <span><i class="live-dot"></i>System Active</span>
     </div>
 
+    <div class="modal" id="punchModal">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 15px;"><i class="fas fa-history"></i> Detailed Day Logs Breakdown</h3>
+            <div class="table-wrapper">
+                <table id="modalTable">
+                    <thead><tr><th>Action</th><th>Timestamp</th><th>Accuracy</th><th>Remark</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <button class="btn-danger" style="width:100%; margin-top:20px; font-weight:bold;" onclick="closeModal()">Close Window</button>
+        </div>
+    </div>
+
     <div class="main-container">
         
         <div class="panel wide-panel">
             <h3><i class="fas fa-satellite-dish"></i> Live Workforce & Error Logs</h3>
             <div class="table-wrapper">
                 <table id="liveTable">
-                    <thead><tr><th>Employee</th><th>Status</th><th>Punch In</th><th>Live Hours</th><th>Remarks</th><th>System Logs</th></tr></thead>
+                    <thead><tr><th>Employee</th><th>Status</th><th>Last Event</th><th>Remarks</th><th>System Logs</th></tr></thead>
                     <tbody></tbody>
                 </table>
             </div>
@@ -78,12 +128,12 @@
             </div>
             <div class="flex-row">
                 <input type="time" id="empShift" title="Shift Start Time" value="09:00">
-                <input type="number" id="empHours" placeholder="Duty Hours (e.g. 9)" value="9">
+                <input type="number" id="empHours" placeholder="Duty Hours" value="9">
             </div>
             <button class="btn-primary" style="width: 100%; margin-top: 10px;" onclick="saveEmployee()"><i class="fas fa-save"></i> Save Employee</button>
             
             <h4 style="margin-top:20px; color:#475569; font-size: 13px; margin-bottom: 10px;">Directory Overview</h4>
-            <div class="table-wrapper" style="max-height: 200px;">
+            <div class="table-wrapper" style="max-height: 180px;">
                 <table id="staffTable">
                     <thead><tr><th>Staff</th><th>Shift/Hrs</th><th>Action</th></tr></thead>
                     <tbody></tbody>
@@ -100,7 +150,7 @@
                 <input type="text" id="locLng" placeholder="Longitude" readonly style="margin:0; background:#f1f5f9;">
                 <button class="btn-success" onclick="saveClinic()" style="min-width: 140px;"><i class="fas fa-map-pin"></i> Drop Pin</button>
             </div>
-            <div class="table-wrapper" style="max-height: 150px; margin-top: 15px;">
+            <div class="table-wrapper" style="max-height: 130px; margin-top: 15px;">
                 <table id="locationTable">
                     <thead><tr><th>Clinic Name</th><th>Coordinates</th><th>Action</th></tr></thead>
                     <tbody></tbody>
@@ -135,8 +185,7 @@
                 <table id="reportTable">
                     <thead>
                         <tr>
-                            <th>Date</th><th>Employee ID</th><th>In Time</th><th>Out Time</th>
-                            <th>Total Hrs</th><th>Minus Hrs</th><th>Time Tag</th><th>Status</th><th>Remark</th>
+                            <th>Date</th><th>Employee ID</th><th>Total Hours</th><th>Minus Hours</th><th>Time Tag</th><th>Status</th><th>View Log</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -159,7 +208,7 @@
     </div>
 
     <script>
-        let map, fenceCircles = [], empMarkers = [], globalEmployees = {};
+        let map, fenceCircles = [], empMarkers = [], globalEmployees = {}, fetchedReports = [];
         
         function initMap() {
             map = L.map('map').setView([23.0300, 72.5800], 12);
@@ -179,16 +228,18 @@
             const res = await fetch('/api/admin/locations');
             const data = await res.json();
             const tbody = document.querySelector('#locationTable tbody');
-            tbody.innerHTML = '';
+            if (tbody) tbody.innerHTML = '';
             fenceCircles.forEach(c => map.removeLayer(c));
             fenceCircles = [];
 
             data.forEach(loc => {
-                tbody.innerHTML += `<tr>
-                    <td><strong>${loc.name}</strong></td>
-                    <td><small>${loc.lat}, ${loc.lng}</small></td>
-                    <td><button class="btn-danger" style="padding: 6px 12px;" onclick="deleteClinic('${loc._id}')"><i class="fas fa-trash"></i></button></td>
-                </tr>`;
+                if (tbody) {
+                    tbody.innerHTML += `<tr>
+                        <td><strong>${loc.name}</strong></td>
+                        <td><small>${loc.lat}, ${loc.lng}</small></td>
+                        <td><button class="btn-danger" style="padding: 6px 12px;" onclick="deleteClinic('${loc._id}')"><i class="fas fa-trash"></i></button></td>
+                    </tr>`;
+                }
                 let c = L.circle([loc.lat, loc.lng], {color: '#10b981', fillColor: '#10b981', fillOpacity: 0.15, radius: 150}).addTo(map).bindPopup(loc.name);
                 fenceCircles.push(c);
             });
@@ -266,7 +317,7 @@
         }
 
         async function loadLiveWorkforce() {
-            const today = new Date(new Date().getTime() + (330 * 60000)).toISOString().split('T')[0]; // IST Date
+            const today = new Date(new Date().getTime() + (330 * 60000)).toISOString().split('T')[0];
             const res = await fetch(`/api/admin/reports`); 
             const punches = await res.json();
             const todayPunches = punches.filter(p => p.date === today);
@@ -275,13 +326,18 @@
             tbody.innerHTML = '';
 
             todayPunches.forEach(p => {
-                let statusHtml = ''; let liveHoursHtml = '-';
-                if (p.entryTime && !p.exitTime) {
-                    statusHtml = `<span class="badge b-blue"><i class="live-dot"></i> Online</span>`;
-                    liveHoursHtml = `<strong class="live-timer" data-start="${p.entryTime}" style="color:#3b82f6;">Calc...</strong>`;
-                } else if (p.entryTime && p.exitTime) {
-                    statusHtml = `<span class="badge b-green">Shift Complete</span>`;
-                    liveHoursHtml = `<span style="color:#64748b;">Logged Out</span>`;
+                let statusHtml = ''; let lastActionTime = '-';
+                const lastPt = p.punches && p.punches.length > 0 ? p.punches[p.punches.length - 1] : null;
+                
+                if (lastPt) {
+                    lastActionTime = `${lastPt.type} at ${lastPt.time}`;
+                    if (lastPt.type === 'IN') {
+                        statusHtml = `<span class="badge b-blue"><i class="live-dot"></i> Online</span>`;
+                    } else {
+                        statusHtml = `<span class="badge b-green">Shift Complete</span>`;
+                    }
+                } else {
+                    statusHtml = `<span class="badge b-red">Absent</span>`;
                 }
 
                 let errorHtml = p.errorLogs ? `<div class="error-log"><i class="fas fa-exclamation-triangle"></i> ${p.errorLogs}</div>` : `<span style="color:#cbd5e1; font-size:12px;">No issues</span>`;
@@ -290,29 +346,12 @@
                 tbody.innerHTML += `<tr>
                     <td><strong>${p.empId}</strong></td>
                     <td>${statusHtml}</td>
-                    <td>${p.entryTime || '-'}</td>
-                    <td>${liveHoursHtml}</td>
+                    <td>${lastActionTime}</td>
                     <td>${remarkHtml}</td>
                     <td>${errorHtml}</td>
                 </tr>`;
             });
         }
-
-        setInterval(() => {
-            const now = new Date();
-            document.querySelectorAll('.live-timer').forEach(el => {
-                const startStr = el.getAttribute('data-start');
-                if(!startStr) return;
-                const start = new Date(now.toDateString() + ' ' + startStr);
-                const diffMs = now - start;
-                if(diffMs > 0) {
-                    const hrs = String(Math.floor(diffMs / 3600000)).padStart(2, '0');
-                    const mins = String(Math.floor((diffMs % 3600000) / 60000)).padStart(2, '0');
-                    const secs = String(Math.floor((diffMs % 60000) / 1000)).padStart(2, '0');
-                    el.innerText = `${hrs}:${mins}:${secs}`;
-                }
-            });
-        }, 1000);
 
         async function loadReports() {
             loadLiveWorkforce(); 
@@ -326,7 +365,7 @@
             if(empId) url += `empId=${empId}`;
 
             const res = await fetch(url);
-            window.currentReportData = await res.json(); 
+            fetchedReports = await res.json(); 
             
             const tbody = document.querySelector('#reportTable tbody');
             tbody.innerHTML = '';
@@ -335,67 +374,95 @@
             empMarkers.forEach(m => map.removeLayer(m));
             empMarkers = [];
 
-            window.currentReportData.forEach(p => {
+            fetchedReports.forEach((p, idx) => {
                 let empInfo = globalEmployees[p.empId] || { shiftStart: '09:00', dutyHours: 9 };
                 
-                // Advanced Calculations
-                let totalHrs = 0, minusHrs = 0, timeTag = '-';
-                if(p.entryTime && p.exitTime) {
-                    const eD = new Date(`1970-01-01T${p.entryTime}Z`);
-                    const xD = new Date(`1970-01-01T${p.exitTime}Z`);
-                    totalHrs = ((xD - eD) / 3600000).toFixed(2);
-                    
-                    if(totalHrs < empInfo.dutyHours) {
-                        minusHrs = (empInfo.dutyHours - totalHrs).toFixed(2);
+                // MULTI PUNCH WORKING HOURS CALCULATION
+                let totalMs = 0;
+                if(p.punches && p.punches.length > 0) {
+                    for (let i = 0; i < p.punches.length; i++) {
+                        if (p.punches[i].type === 'IN' && p.punches[i+1] && p.punches[i+1].type === 'OUT') {
+                            totalMs += (new Date(`1970-01-01T${p.punches[i+1].time}Z`) - new Date(`1970-01-01T${p.punches[i].time}Z`));
+                        }
                     }
                 }
+                
+                let totalHrs = (totalMs / 3600000).toFixed(2);
+                let minusHrs = totalHrs < empInfo.dutyHours ? (empInfo.dutyHours - totalHrs).toFixed(2) : 0;
 
-                // Check Late Punch
-                if(p.entryTime && p.entryTime > empInfo.shiftStart) {
+                // Check Late Punch based on first session
+                let firstIn = p.punches ? p.punches.find(x => x.type === 'IN') : null;
+                let timeTag = '-';
+                if(firstIn && firstIn.time > empInfo.shiftStart) {
                     timeTag = `<span class="badge b-red">Late Punch</span>`;
-                } else if(p.entryTime) {
+                } else if(firstIn) {
                     timeTag = `<span class="badge b-green">On Time</span>`;
                 }
 
                 let badge = p.status === 'Present' ? 'b-green' : (p.status === 'Half Day' ? 'b-orange' : 'b-red');
-                let remarkHtml = p.remark ? `<span style="color:#8b5cf6; font-size:12px; font-style:italic;">${p.remark}</span>` : '-';
 
                 tbody.innerHTML += `<tr>
                     <td>${p.date}</td>
                     <td><strong>${p.empId}</strong></td>
-                    <td>${p.entryTime || '-'}</td>
-                    <td>${p.exitTime || '-'}</td>
                     <td><b>${totalHrs > 0 ? totalHrs + ' Hrs' : '-'}</b></td>
                     <td class="text-danger">${minusHrs > 0 ? '-' + minusHrs + ' Hrs' : '-'}</td>
                     <td>${timeTag}</td>
                     <td><span class="badge ${badge}">${p.status}</span></td>
-                    <td>${remarkHtml}</td>
+                    <td><button class="btn-warning" style="padding:6px 12px;" onclick="openDetailsWindow(${idx})"><i class="fas fa-eye"></i></button></td>
                 </tr>`;
 
-                // ADD DOTS TO MAP
-                if (p.entryLat && p.entryLng) {
-                    let mIn = L.circleMarker([p.entryLat, p.entryLng], {
-                        color: '#10b981', fillColor: '#10b981', fillOpacity: 0.9, radius: 7
-                    }).addTo(map).bindPopup(`<b>${p.empId}</b><br>🟢 Punch IN: ${p.entryTime}<br>Date: ${p.date}`);
-                    empMarkers.push(mIn);
-                }
-                if (p.exitLat && p.exitLng) {
-                    let mOut = L.circleMarker([p.exitLat, p.exitLng], {
-                        color: '#ef4444', fillColor: '#ef4444', fillOpacity: 0.9, radius: 7
-                    }).addTo(map).bindPopup(`<b>${p.empId}</b><br>🔴 Punch OUT: ${p.exitTime}<br>Date: ${p.date}`);
-                    empMarkers.push(mOut);
+                // ANIMATED PULSING DIVICON GENERATOR FOR HIGH VISIBILITY ON MAP
+                if(p.punches && p.punches.length > 0) {
+                    p.punches.forEach(pt => {
+                        if (pt.lat && pt.lng) {
+                            let pulseClass = pt.type === 'IN' ? 'pulse-marker-in' : 'pulse-marker-out';
+                            let animatedIcon = L.divIcon({
+                                className: pulseClass,
+                                iconSize: [14, 14],
+                                iconAnchor: [7, 7]
+                            });
+
+                            let marker = L.marker([pt.lat, pt.lng], { icon: animatedIcon }).addTo(map)
+                                .bindPopup(`<b>${p.empId}</b><br><b style="color:${pt.type==='IN'?'#10b981':'#ef4444'}">${pt.type}</b>: ${pt.time}<br>Date: ${p.date}`);
+                            empMarkers.push(marker);
+                        }
+                    });
                 }
             });
         }
 
-        // Export Table to Excel
+        function openDetailsWindow(idx) {
+            const report = fetchedReports[idx];
+            const tbody = document.querySelector('#modalTable tbody');
+            tbody.innerHTML = '';
+            
+            if(report.punches && report.punches.length > 0) {
+                report.punches.forEach(pt => {
+                    let icon = pt.type === 'IN' ? '🟢 IN' : '🔴 OUT';
+                    tbody.innerHTML += `<tr>
+                        <td><b>${icon}</b></td>
+                        <td>${pt.time}</td>
+                        <td>±${Math.round(pt.accuracy || 0)}m</td>
+                        <td>${pt.remark || '-'}</td>
+                    </tr>`;
+                });
+            } else {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#94a3b8;">No records found.</td></tr>`;
+            }
+            document.getElementById('punchModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('punchModal').style.display = 'none';
+        }
+
         function exportToExcel() {
             let table = document.getElementById("reportTable");
             let rows = table.querySelectorAll("tr");
             let csv = [];
             for (let i = 0; i < rows.length; i++) {
                 let row = [], cols = rows[i].querySelectorAll("td, th");
-                for (let j = 0; j < cols.length; j++) row.push(cols[j].innerText.replace(/,/g, ''));
+                for (let j = 0; j < cols.length - 1; j++) row.push(cols[j].innerText.replace(/,/g, '')); // Avoid eye column in csv
                 csv.push(row.join(","));
             }
             let csvFile = new Blob([csv.join("\n")], {type: "text/csv"});
@@ -405,7 +472,6 @@
             downloadLink.click();
         }
 
-        // CSV Template for Upload
         function downloadSampleCSV() {
             const csvData = "empId,date,entryTime,exitTime,status,entryLat,entryLng,exitLat,exitLng\nAIRMED-001,2026-06-02,09:00:00,18:00:00,Present,23.0300,72.5800,23.0300,72.5800";
             const blob = new Blob([csvData], { type: 'text/csv' });
@@ -430,16 +496,14 @@
                         });
                     }
                 }
-                
                 try {
                     const res = await fetch('/api/admin/bulk-punch', {
                         method: 'POST', headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({ punches: payload })
                     });
-                    const data = await res.json();
                     alert(`Upload Success! Imported ${payload.length} records.`);
                     loadReports();
-                } catch(err) { alert("Upload failed. Check format."); }
+                } catch(err) { alert("Upload failed."); }
             };
             reader.readAsText(file);
         }
@@ -466,7 +530,7 @@
             
             document.getElementById('repFrom').value = todayStr;
             document.getElementById('repTo').value = todayStr;
-            setTimeout(loadReports, 1000); // slight delay to ensure staff is loaded for calculations
+            setTimeout(loadReports, 1200); 
         });
     </script>
 </body>
