@@ -6,7 +6,7 @@ require('dotenv').config();
 
 const Employee = require('./models/Employee');
 const Punch = require('./models/Punch');
-const Location = require('./models/Location'); // Naya model import
+const Location = require('./models/Location'); 
 
 const app = express();
 app.use(express.json());
@@ -49,20 +49,28 @@ app.post('/api/punch', async (req, res) => {
 
     for (let loc of savedLocations) {
         const dist = getDistance(lat, lng, loc.lat, loc.lng);
-        if (dist <= 150) { // Radius 50m se badha kar 150m kar diya GPS accuracy ke liye
+        if (dist <= 150) { // Radius 150m for GPS accuracy
             matchedLocation = loc.name;
             break;
         }
     }
 
-    // Agar kisi clinic ke 50m radius me nahi hai toh block karein
-    if (!matchedLocation) {
-        return res.status(400).json({ success: false, message: "Punch Rejected! Aap kisi bhi authorize clinic/geofence ke andar nahi hain." });
-    }
-
     const today = new Date().toISOString().split('T')[0];
     const nowTime = new Date().toTimeString().split(' ')[0];
     let punchRecord = await Punch.findOne({ empId, date: today });
+
+    // Agar kisi clinic ke 150m radius me nahi hai toh block karein aur Admin Log me error save karein
+    if (!matchedLocation) {
+        const errorMsg = `Location Rejected: ${type} at ${nowTime}`;
+        if (punchRecord) {
+            punchRecord.errorLogs = errorMsg;
+            await punchRecord.save();
+        } else {
+            punchRecord = new Punch({ empId, date: today, errorLogs: errorMsg });
+            await punchRecord.save();
+        }
+        return res.status(400).json({ success: false, message: "Punch Rejected! Aap kisi bhi authorize clinic/geofence ke andar nahi hain." });
+    }
 
     if (type === 'IN') {
         if (punchRecord && punchRecord.entryTime) return res.status(400).json({ success: false, message: "Already Punched IN today." });
@@ -70,12 +78,14 @@ app.post('/api/punch', async (req, res) => {
             punchRecord = new Punch({ empId, date: today, entryTime: nowTime, entryLat: lat, entryLng: lng, status: "Miss Punch" });
         } else {
             punchRecord.entryTime = nowTime; punchRecord.entryLat = lat; punchRecord.entryLng = lng;
+            punchRecord.errorLogs = null; // Clear previous errors if punch is successful
         }
     } else if (type === 'OUT') {
         if (!punchRecord || !punchRecord.entryTime) return res.status(400).json({ success: false, message: "Pehle Punch IN karein." });
         if (punchRecord.exitTime) return res.status(400).json({ success: false, message: "Already Punched OUT today." });
         
         punchRecord.exitTime = nowTime; punchRecord.exitLat = lat; punchRecord.exitLng = lng;
+        punchRecord.errorLogs = null; // Clear previous errors if punch is successful
         const hours = (new Date(`1970-01-01T${nowTime}Z`) - new Date(`1970-01-01T${punchRecord.entryTime}Z`)) / (1000 * 60 * 60);
         punchRecord.status = hours >= 4 ? "Present" : "Half Day";
     }
@@ -97,11 +107,9 @@ app.get('/api/admin/employees', async (req, res) => {
 app.post('/api/admin/employees', async (req, res) => {
     const { empId, name, password, phone, id } = req.body;
     if (id) {
-        // Edit Existing
         await Employee.findByIdAndUpdate(id, { empId, name, password, phone });
         return res.json({ success: true, message: "Employee updated successfully." });
     } else {
-        // Add New
         const exist = await Employee.findOne({ empId });
         if (exist) return res.status(400).json({ success: false, message: "Employee ID already exists." });
         const newEmp = new Employee({ empId, name, password, phone });
@@ -110,7 +118,7 @@ app.post('/api/admin/employees', async (req, res) => {
     }
 });
 
-// 3. Toggle Status (Disable/Active) - NO DELETE
+// 3. Toggle Status (Disable/Active)
 app.put('/api/admin/employees/status', async (req, res) => {
     const { id, status } = req.body;
     await Employee.findByIdAndUpdate(id, { status });
@@ -143,6 +151,29 @@ app.get('/api/admin/reports', async (req, res) => {
 
     const punches = await Punch.find(query);
     res.json(punches);
+});
+
+// 6. CSV Bulk Upload API (NEW ROUTE)
+app.post('/api/admin/bulk-punch', async (req, res) => {
+    const { punches } = req.body;
+    try {
+        for (let p of punches) {
+            await Punch.findOneAndUpdate(
+                { empId: p.empId, date: p.date }, 
+                { 
+                    $set: {
+                        entryTime: p.entryTime,
+                        exitTime: p.exitTime,
+                        status: p.status
+                    }
+                }, 
+                { upsert: true, new: true }
+            );
+        }
+        res.json({ success: true, message: "Bulk data imported successfully." });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
 });
 
 const PORT = process.env.PORT || 3000;
