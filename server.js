@@ -41,15 +41,14 @@ app.post('/api/login', async (req, res) => {
 });
 
 app.post('/api/punch', async (req, res) => {
-    const { empId, type, lat, lng } = req.body;
+    const { empId, type, lat, lng, remark } = req.body;
     
-    // DB se saari active locations/clinics fetch karein
     const savedLocations = await Location.find({});
     let matchedLocation = null;
 
     for (let loc of savedLocations) {
         const dist = getDistance(lat, lng, loc.lat, loc.lng);
-        if (dist <= 150) { // Radius 150m for GPS accuracy
+        if (dist <= 150) { 
             matchedLocation = loc.name;
             break;
         }
@@ -59,33 +58,36 @@ app.post('/api/punch', async (req, res) => {
     const nowTime = new Date().toTimeString().split(' ')[0];
     let punchRecord = await Punch.findOne({ empId, date: today });
 
-    // Agar kisi clinic ke 150m radius me nahi hai toh block karein aur Admin Log me error save karein
+    let finalRemark = remark ? `${type}: ${remark}` : null;
+
     if (!matchedLocation) {
-        const errorMsg = `Location Rejected: ${type} at ${nowTime}`;
+        const errorMsg = `Out of Location (${type} Attempt at ${nowTime})`;
         if (punchRecord) {
-            punchRecord.errorLogs = errorMsg;
+            punchRecord.errorLogs = punchRecord.errorLogs ? punchRecord.errorLogs + ' | ' + errorMsg : errorMsg;
+            if(finalRemark) punchRecord.remark = punchRecord.remark ? punchRecord.remark + ' | ' + finalRemark : finalRemark;
             await punchRecord.save();
         } else {
-            punchRecord = new Punch({ empId, date: today, errorLogs: errorMsg });
+            punchRecord = new Punch({ empId, date: today, errorLogs: errorMsg, remark: finalRemark });
             await punchRecord.save();
         }
-        return res.status(400).json({ success: false, message: "Punch Rejected! Aap kisi bhi authorize clinic/geofence ke andar nahi hain." });
+        return res.status(400).json({ success: false, message: "Punch Rejected! You are outside the authorized clinic/geofence." });
     }
 
     if (type === 'IN') {
         if (punchRecord && punchRecord.entryTime) return res.status(400).json({ success: false, message: "Already Punched IN today." });
         if (!punchRecord) {
-            punchRecord = new Punch({ empId, date: today, entryTime: nowTime, entryLat: lat, entryLng: lng, status: "Miss Punch" });
+            punchRecord = new Punch({ empId, date: today, entryTime: nowTime, entryLat: lat, entryLng: lng, status: "Miss Punch", remark: finalRemark });
         } else {
             punchRecord.entryTime = nowTime; punchRecord.entryLat = lat; punchRecord.entryLng = lng;
-            punchRecord.errorLogs = null; // Clear previous errors if punch is successful
+            if(finalRemark) punchRecord.remark = punchRecord.remark ? punchRecord.remark + ' | ' + finalRemark : finalRemark;
         }
     } else if (type === 'OUT') {
-        if (!punchRecord || !punchRecord.entryTime) return res.status(400).json({ success: false, message: "Pehle Punch IN karein." });
+        if (!punchRecord || !punchRecord.entryTime) return res.status(400).json({ success: false, message: "Please Punch IN first." });
         if (punchRecord.exitTime) return res.status(400).json({ success: false, message: "Already Punched OUT today." });
         
         punchRecord.exitTime = nowTime; punchRecord.exitLat = lat; punchRecord.exitLng = lng;
-        punchRecord.errorLogs = null; // Clear previous errors if punch is successful
+        if(finalRemark) punchRecord.remark = punchRecord.remark ? punchRecord.remark + ' | ' + finalRemark : finalRemark;
+        
         const hours = (new Date(`1970-01-01T${nowTime}Z`) - new Date(`1970-01-01T${punchRecord.entryTime}Z`)) / (1000 * 60 * 60);
         punchRecord.status = hours >= 4 ? "Present" : "Half Day";
     }
@@ -94,16 +96,22 @@ app.post('/api/punch', async (req, res) => {
     res.json({ success: true, message: `Punched ${type} at ${matchedLocation} (${nowTime})` });
 });
 
+// Get personal history for employee dashboard
+app.get('/api/employee/history', async (req, res) => {
+    const { empId } = req.query;
+    if(!empId) return res.status(400).json({success: false, message: "Employee ID required"});
+    const history = await Punch.find({ empId }).sort({ date: -1 }).limit(30); // Last 30 days
+    res.json({ success: true, history });
+});
+
 
 // ====== ADMIN PANEL APIs ======
 
-// 1. Get All Employees
 app.get('/api/admin/employees', async (req, res) => {
     const emps = await Employee.find({ role: { $ne: 'admin' } });
     res.json(emps);
 });
 
-// 2. Add / Edit Employee
 app.post('/api/admin/employees', async (req, res) => {
     const { empId, name, password, phone, id } = req.body;
     if (id) {
@@ -118,14 +126,12 @@ app.post('/api/admin/employees', async (req, res) => {
     }
 });
 
-// 3. Toggle Status (Disable/Active)
 app.put('/api/admin/employees/status', async (req, res) => {
     const { id, status } = req.body;
     await Employee.findByIdAndUpdate(id, { status });
     res.json({ success: true, message: `Employee status changed to ${status}.` });
 });
 
-// 4. Get/Save/Delete Dynamic Geofences
 app.get('/api/admin/locations', async (req, res) => {
     const locs = await Location.find({});
     res.json(locs);
@@ -142,18 +148,16 @@ app.delete('/api/admin/locations/:id', async (req, res) => {
     res.json({ success: true, message: "Location deleted." });
 });
 
-// 5. HR Attendance Reports (Live, Filter by Date & Employee)
 app.get('/api/admin/reports', async (req, res) => {
     const { from, to, empId } = req.query;
     let query = {};
     if (from && to) query.date = { $gte: from, $lte: to };
     if (empId) query.empId = empId;
 
-    const punches = await Punch.find(query);
+    const punches = await Punch.find(query).sort({ date: -1 });
     res.json(punches);
 });
 
-// 6. CSV Bulk Upload API (NEW ROUTE)
 app.post('/api/admin/bulk-punch', async (req, res) => {
     const { punches } = req.body;
     try {
