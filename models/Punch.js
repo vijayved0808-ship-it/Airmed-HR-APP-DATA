@@ -10,7 +10,8 @@ const punchSchema = new mongoose.Schema({
     exitLat: { type: Number, default: null },
     exitLng: { type: Number, default: null },
     status: { type: String, default: 'Leave' },
-    errorLogs: { type: String, default: null } // <--- YEH NAYI LINE ADD KARNI HAI
+    errorLogs: { type: String, default: null },
+    remark: { type: String, default: null } // <-- New field for employee remarks
 }, { timestamps: true });
 
 module.exports = mongoose.model('Punch', punchSchema);
