@@ -11,29 +11,39 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: #f4f7f6; color: #1e293b; overflow-x: hidden; }
+        
         .navbar { background: #ffffff; color: #1e3a8a; padding: 20px 30px; font-size: 24px; font-weight: 800; box-shadow: 0 4px 20px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
         .navbar span { font-size: 14px; font-weight: 400; color: #64748b; background: #f1f5f9; padding: 5px 12px; border-radius: 20px; }
+        
         .main-container { display: flex; flex-wrap: wrap; padding: 30px; gap: 30px; max-width: 1600px; margin: 0 auto; }
         .panel { background: #ffffff; padding: 25px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); flex: 1; min-width: 320px; transition: 0.3s ease; border: 1px solid #f1f5f9; }
         .wide-panel { flex: 2; min-width: 650px; }
+        
         h3 { margin-bottom: 20px; color: #0f172a; font-weight: 600; display: flex; align-items: center; gap: 10px; font-size: 18px; }
+        h3 i { color: #3b82f6; background: #eff6ff; padding: 8px; border-radius: 8px; }
+        
         input, select { width: 100%; padding: 10px 12px; margin: 5px 0 10px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; background: #f8fafc; transition: 0.3s; }
+        input:focus, select:focus { outline: none; border-color: #3b82f6; background: #ffffff; box-shadow: 0 0 0 4px rgba(59,130,246,0.1); }
+        
         button { padding: 10px 15px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; border: none; display: inline-flex; align-items: center; gap: 6px; }
-        .btn-primary { background: #3b82f6; color: white; }
-        .btn-success { background: #10b981; color: white; }
+        .btn-primary { background: #3b82f6; color: white; box-shadow: 0 4px 12px rgba(59,130,246,0.3); }
+        .btn-success { background: #10b981; color: white; box-shadow: 0 4px 12px rgba(16,185,129,0.3); }
         .btn-warning { background: #f59e0b; color: white; }
         .btn-danger { background: #ef4444; color: white; }
         .btn-outline { background: transparent; border: 2px solid #e2e8f0; color: #475569; }
+        
         #map { height: 350px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #e2e8f0; z-index: 1; }
         .table-wrapper { overflow-x: auto; border-radius: 12px; border: 1px solid #e2e8f0; }
         table { width: 100%; border-collapse: collapse; font-size: 13px; background: white; white-space: nowrap; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #f1f5f9; }
         th { background: #f8fafc; color: #64748b; font-weight: 600; text-transform: uppercase; font-size: 11px; position: sticky; top: 0; z-index: 10;}
-        .badge { padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+        
+        .badge { padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-block; }
         .b-green { background: #d1fae5; color: #065f46; }
         .b-red { background: #fee2e2; color: #991b1b; }
         .b-orange { background: #ffedd5; color: #9a3412; }
         .b-blue { background: #dbeafe; color: #1e40af; }
+        
         .live-dot { height: 8px; width: 8px; background-color: #10b981; border-radius: 50%; display: inline-block; margin-right: 5px; animation: pulse 1.5s infinite; }
         .error-log { color: #ef4444; font-size: 12px; background: #fee2e2; padding: 4px 8px; border-radius: 4px; margin-top: 4px; display: inline-block; }
         .remark-text { color: #8b5cf6; font-size: 12px; background: #f3e8ff; padding: 4px 8px; border-radius: 4px; margin-top: 4px; display: inline-block; font-style: italic; }
@@ -41,11 +51,14 @@
         .upload-box { border: 2px dashed #cbd5e1; padding: 20px; text-align: center; border-radius: 12px; background: #f8fafc; cursor: pointer; flex-grow: 1;}
         .flex-row { display: flex; gap: 10px; align-items: center; margin-bottom: 10px;}
 
-        /* Map Fixes */
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+
+        /* PULSING DIVICON GLOW EFFECTS FOR MAP DOTS */
         .pulse-marker-in { background: #10b981; border: 2px solid white; border-radius: 50%; animation: map-pulse-green 1.5s infinite; }
         .pulse-marker-out { background: #ef4444; border: 2px solid white; border-radius: 50%; animation: map-pulse-red 1.5s infinite; }
         @keyframes map-pulse-green { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.8); } 70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
         @keyframes map-pulse-red { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.8); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+        
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); z-index: 2000; align-items: center; justify-content: center; }
         .modal-content { background: white; padding: 30px; border-radius: 20px; max-width: 650px; width: 90%; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
     </style>
@@ -62,7 +75,7 @@
             <h3 style="margin-bottom: 15px;"><i class="fas fa-history"></i> Detailed Day Logs Breakdown</h3>
             <div class="table-wrapper">
                 <table id="modalTable">
-                    <thead><tr><th>Action</th><th>Timestamp</th><th>Accuracy</th><th>Remark</th></tr></thead>
+                    <thead><tr><th>Action</th><th>Time</th><th>Location / Coordinates</th></tr></thead>
                     <tbody></tbody>
                 </table>
             </div>
@@ -143,7 +156,7 @@
                 </div>
                 <div style="display: flex; gap: 10px; margin-top: 15px;">
                     <button class="btn-primary" onclick="loadReports()"><i class="fas fa-sync"></i> Run Reports & Track Map</button>
-                    <button class="btn-success" onclick="exportToExcel()"><i class="fas fa-file-excel"></i> Export Excel</button>
+                    <button class="btn-success" onclick="exportToExcel()"><i class="fas fa-file-excel"></i> Detailed Excel Export</button>
                     <button class="btn-success" onclick="shareMissPunches()" style="background:#25d366;"><i class="fab fa-whatsapp"></i> Notify Missing</button>
                 </div>
             </div>
@@ -241,7 +254,7 @@
 
             emps.forEach(emp => {
                 globalEmployees[emp.empId] = emp; 
-                filterSelect.innerHTML += `<option value="${emp.empId}">${emp.name}</option>`;
+                filterSelect.innerHTML += `<option value="${emp.empId}">${emp.name}</option>';
                 const badge = emp.status === 'active' ? '<span class="badge b-green">Active</span>' : '<span class="badge b-red">Disabled</span>';
                 tbody.innerHTML += `<tr>
                     <td><strong>${emp.name}</strong><br><small style="color:#64748b">${emp.empId}</small></td>
@@ -283,7 +296,6 @@
             loadStaff();
         }
 
-        // Live Table displaying Punch IN and Punch OUT
         async function loadLiveWorkforce() {
             const today = new Date(new Date().getTime() + (330 * 60000)).toISOString().split('T')[0];
             const res = await fetch(`/api/admin/reports`); 
@@ -294,9 +306,7 @@
             tbody.innerHTML = '';
 
             todayPunches.forEach(p => {
-                let statusHtml = ''; 
-                let firstIn = '-';
-                let lastOut = '-';
+                let statusHtml = ''; let firstIn = '-'; let lastOut = '-';
                 
                 const ptIn = p.punches && p.punches.find(x => x.type === 'IN');
                 const ptOut = p.punches && [...p.punches].reverse().find(x => x.type === 'OUT');
@@ -386,29 +396,19 @@
                     <td><button class="btn-warning" style="padding:6px 12px;" onclick="openDetailsWindow(${idx})"><i class="fas fa-eye"></i></button></td>
                 </tr>`;
 
-                // ANIMATED ZOOM-SAFE MAP MARKERS WITH OFFSET
+                // ANIMATED ZOOM-SAFE MAP MARKERS WITH ANCHORED OFFSETS
                 if(p.punches && p.punches.length > 0) {
                     p.punches.forEach(pt => {
                         if (pt.lat && pt.lng) {
                             let pulseClass = pt.type === 'IN' ? 'pulse-marker-in' : 'pulse-marker-out';
+                            let animatedIcon = L.divIcon({ className: pulseClass, iconSize: [12, 12], iconAnchor: [6, 6] });
+                            let markerLat = pt.lat; let markerLng = pt.lng;
                             
-                            // Anchor [6,6] ensures it scales perfectly when map zooms
-                            let animatedIcon = L.divIcon({
-                                className: pulseClass,
-                                iconSize: [12, 12],
-                                iconAnchor: [6, 6] 
-                            });
-
-                            // Tiny Offset logic to prevent Red/Green overlapping completely
-                            let markerLat = pt.lat;
-                            let markerLng = pt.lng;
-                            if (pt.type === 'OUT') {
-                                markerLat += 0.00015; // Slighly shift OUT marker right
-                                markerLng += 0.00015;
-                            }
+                            // Tiny offset parsing to split perfect overlap configurations
+                            if (pt.type === 'OUT') { markerLat += 0.00015; markerLng += 0.00015; }
 
                             let marker = L.marker([markerLat, markerLng], { icon: animatedIcon }).addTo(map)
-                                .bindPopup(`<b>${p.empId}</b><br><b style="color:${pt.type==='IN'?'#10b981':'#ef4444'}">${pt.type}</b>: ${pt.time}<br>Date: ${p.date}`);
+                                .bindPopup(`<b>${p.empId}</b><br><b style="color:${pt.type==='IN'?'#10b981':'#ef4444'}">${pt.type}</b>: ${pt.time}<br>Loc: ${pt.location || 'Unknown'}`);
                             empMarkers.push(marker);
                         }
                     });
@@ -427,34 +427,61 @@
                     tbody.innerHTML += `<tr>
                         <td><b>${icon}</b></td>
                         <td>${pt.time}</td>
-                        <td>±${Math.round(pt.accuracy || 0)}m</td>
-                        <td>${pt.remark || '-'}</td>
+                        <td>${pt.location || 'Unknown'} <small>(${pt.lat}, ${pt.lng})</small></td>
                     </tr>`;
                 });
             } else {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#94a3b8;">No records found.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#94a3b8;">No records found.</td></tr>`;
             }
             document.getElementById('punchModal').style.display = 'flex';
         }
+
+        document.getElementById('punchModal').addEventListener('click', function(e) {
+            if(e.target === this) closeModal();
+        });
 
         function closeModal() {
             document.getElementById('punchModal').style.display = 'none';
         }
 
+        // COMPLEX STRUCTURE EXCEL WRITER SCRIPT
         function exportToExcel() {
-            let table = document.getElementById("reportTable");
-            let rows = table.querySelectorAll("tr");
-            let csv = [];
-            for (let i = 0; i < rows.length; i++) {
-                let row = [], cols = rows[i].querySelectorAll("td, th");
-                for (let j = 0; j < cols.length - 1; j++) row.push(cols[j].innerText.replace(/,/g, ''));
-                csv.push(row.join(","));
-            }
-            let csvFile = new Blob([csv.join("\n")], {type: "text/csv"});
-            let downloadLink = document.createElement("a");
-            downloadLink.download = "Airmed_HR_Report.csv";
-            downloadLink.href = window.URL.createObjectURL(csvFile);
-            downloadLink.click();
+            if(!fetchedReports || fetchedReports.length === 0) return alert("No reports to export! Run report first.");
+            
+            let csvContent = "Date,Employee ID,Name,Shift Start,Expected Duty Hrs,Total Worked Hrs,Minus Hrs,Status,Time Tag,Detailed Segment Punch Logs (Action-Time-Branch Location)\n";
+            
+            fetchedReports.forEach(p => {
+                let empInfo = globalEmployees[p.empId] || { name: 'Unknown', shiftStart: '09:00', dutyHours: 9 };
+                let totalMs = 0; let logDetails = [];
+                
+                if(p.punches && p.punches.length > 0) {
+                    for (let i = 0; i < p.punches.length; i++) {
+                        if (p.punches[i].type === 'IN' && p.punches[i+1] && p.punches[i+1].type === 'OUT') {
+                            totalMs += (new Date(`1970-01-01T${p.punches[i+1].time}Z`) - new Date(`1970-01-01T${p.punches[i].time}Z`));
+                        }
+                        let branchLoc = p.punches[i].location ? p.punches[i].location : 'Unknown Branch';
+                        logDetails.push(`${p.punches[i].type} at ${p.punches[i].time} (${branchLoc})`);
+                    }
+                }
+                
+                let totalHrs = (totalMs / 3600000).toFixed(2);
+                let minusHrs = totalHrs < empInfo.dutyHours ? (empInfo.dutyHours - totalHrs).toFixed(2) : 0;
+                let firstIn = p.punches ? p.punches.find(x => x.type === 'IN') : null;
+                let timeTag = (firstIn && firstIn.time > empInfo.shiftStart) ? 'Late Punch' : 'On Time';
+                if(!firstIn) timeTag = '-';
+
+                let logString = logDetails.join(" | ");
+                csvContent += `${p.date},${p.empId},${empInfo.name},${empInfo.shiftStart},${empInfo.dutyHours},${totalHrs},${minusHrs},${p.status},${timeTag},"${logString}"\n`;
+            });
+
+            let blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            let link = document.createElement("a");
+            let url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", `Airmed_Detailed_Attendance_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
         function downloadSampleCSV() {
@@ -482,12 +509,12 @@
                     }
                 }
                 try {
-                    const res = await fetch('/api/admin/bulk-punch', {
+                    await fetch('/api/admin/bulk-punch', {
                         method: 'POST', headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({ punches: payload })
                     });
                     alert(`Upload Success! Imported ${payload.length} records.`);
-                    loadReports();
+                    loadStaff(); loadReports();
                 } catch(err) { alert("Upload failed."); }
             };
             reader.readAsText(file);
