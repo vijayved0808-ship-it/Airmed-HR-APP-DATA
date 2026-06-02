@@ -7,9 +7,10 @@
     
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#1e3a8a">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Noto+Sans+Devanagari&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-    
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
@@ -70,7 +71,7 @@
         .btn-install-app { 
             background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); 
             font-weight: bold; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); 
-            margin-bottom: 25px; display: none; animation: pulseGlow 2s infinite; 
+            margin-bottom: 25px; display: flex; animation: pulseGlow 2s infinite; 
         }
         @keyframes pulseGlow {
             0% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4); }
@@ -229,6 +230,7 @@
                 const data = await res.json();
                 
                 if (data.success) {
+                    // PROFESSIONAL SUCCESS POPUP
                     Swal.fire({
                         title: `Successfully Punched ${type}!`,
                         html: `<b>Time:</b> ${data.time}<br><small>${data.message}</small>`,
@@ -302,7 +304,7 @@
         if (localStorage.getItem('empId')) showDashboard(localStorage.getItem('empName'));
 
         // ==========================================
-        // PWA INSTALL SCRIPT LOGIC
+        // PWA INSTALL SCRIPT LOGIC (FAIL-SAFE)
         // ==========================================
         let deferredPrompt;
         const installBtn = document.getElementById('mobileInstallDirectBtn');
@@ -318,17 +320,22 @@
         window.addEventListener('beforeinstallprompt', (e) => { 
             e.preventDefault(); 
             deferredPrompt = e; 
-            installBtn.style.display = 'block'; // Button ab dikhega
         });
 
         // 3. Trigger Install when Button is Clicked
         async function triggerInstall() {
             if (deferredPrompt) {
-                installBtn.style.display = 'none'; // Click hone ke baad chupa do
                 deferredPrompt.prompt(); 
-                const { outcome } = await deferredPrompt.userChoice;
-                console.log(`User response to install prompt: ${outcome}`);
                 deferredPrompt = null; 
+            } else {
+                // FALLBACK TUTORIAL IF NATIVE PROMPT IS BLOCKED BY BROWSER
+                Swal.fire({
+                    title: 'Install the App',
+                    html: `To install this app on your phone:<br><br><b>1.</b> Tap the <b>3 dots (⋮)</b> in your Chrome browser menu (top right).<br><b>2.</b> Select <b>"Add to Home Screen"</b> or <b>"Install App"</b>.<br><b>3.</b> Confirm and you're done!`,
+                    icon: 'info',
+                    confirmButtonText: 'Got it!',
+                    confirmButtonColor: '#8b5cf6'
+                });
             }
         }
     </script>
