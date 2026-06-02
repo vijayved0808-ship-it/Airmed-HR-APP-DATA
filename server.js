@@ -95,7 +95,8 @@ app.post('/api/punch', async (req, res) => {
         return res.status(400).json({ success: false, message: "Pehle Punch IN karna zaroori hai." });
     }
 
-    punchRecord.punches.push({ type, time: nowTime, lat, lng, accuracy, remark: remark || null });
+    // UPDATE: Saving matchedLocation in DB array
+    punchRecord.punches.push({ type, time: nowTime, lat, lng, accuracy, location: matchedLocation, remark: remark || null });
 
     if (finalRemark) { punchRecord.remark = punchRecord.remark ? punchRecord.remark + ' | ' + finalRemark : finalRemark; }
     if (aiAssisted) {
@@ -178,28 +179,20 @@ app.get('/api/admin/reports', async (req, res) => {
     res.json(await Punch.find(query).sort({ date: -1 }));
 });
 
-// AUTO EMPLOYEE CREATION ON BULK UPLOAD + IN/OUT Fix
+// BULK UPLOAD 
 app.post('/api/admin/bulk-punch', async (req, res) => {
     const { punches } = req.body;
     try {
         for (let p of punches) {
-            
-            // Intelligence: Automatically create employee if not exists
             const empExist = await Employee.findOne({ empId: p.empId });
             if (!empExist) {
                 await new Employee({
-                    empId: p.empId,
-                    name: `New (${p.empId})`, // Temporary name
-                    password: "123", // Default password
-                    shiftStart: "09:00",
-                    dutyHours: 9
+                    empId: p.empId, name: `New (${p.empId})`, password: "123", shiftStart: "09:00", dutyHours: 9
                 }).save();
             }
-
-            // Create punch array logically
             let newPunches = [];
-            if(p.entryTime) newPunches.push({ type: 'IN', time: p.entryTime, lat: p.entryLat, lng: p.entryLng });
-            if(p.exitTime) newPunches.push({ type: 'OUT', time: p.exitTime, lat: p.exitLat, lng: p.exitLng });
+            if(p.entryTime) newPunches.push({ type: 'IN', time: p.entryTime, lat: p.entryLat, lng: p.entryLng, location: "Excel Upload" });
+            if(p.exitTime) newPunches.push({ type: 'OUT', time: p.exitTime, lat: p.exitLat, lng: p.exitLng, location: "Excel Upload" });
 
             await Punch.findOneAndUpdate(
                 { empId: p.empId, date: p.date }, 
