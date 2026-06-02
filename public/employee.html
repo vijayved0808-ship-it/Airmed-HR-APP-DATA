@@ -9,6 +9,8 @@
     <meta name="theme-color" content="#1e3a8a">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <!-- SweetAlert2 for Professional Popups -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
@@ -28,6 +30,7 @@
             text-align: center; 
             animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             border: 1px solid rgba(255,255,255,0.8);
+            position: relative;
         }
 
         @keyframes slideUp { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
@@ -57,45 +60,44 @@
         button:active { transform: scale(0.96); }
 
         .btn-login { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); box-shadow: 0 4px 12px rgba(37,99,235,0.3); margin-top: 5px; }
-        .btn-login:hover { box-shadow: 0 6px 15px rgba(37,99,235,0.4); transform: translateY(-2px); }
         .btn-in { background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 4px 12px rgba(16,185,129,0.3); }
-        .btn-in:hover { box-shadow: 0 6px 15px rgba(16,185,129,0.4); transform: translateY(-2px); }
         .btn-out { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); box-shadow: 0 4px 12px rgba(245,158,11,0.3); }
-        .btn-out:hover { box-shadow: 0 6px 15px rgba(245,158,11,0.4); transform: translateY(-2px); }
         .btn-history { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; margin-top: 25px; }
-        .btn-history:hover { background: #e2e8f0; color: #1e293b; }
         .btn-logout { background: transparent; color: #ef4444; margin-top: 5px; font-size: 14px; }
-        .btn-logout:hover { text-decoration: underline; background: #fee2e2; }
-        .btn-install { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); margin-bottom: 25px; display: none; animation: pulseGlow 2s infinite; }
-
-        @keyframes pulseGlow {
-            0% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(139, 92, 246, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
+        
+        .floating-install { 
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); 
+            background: #1e293b; color: white; padding: 12px 25px; border-radius: 30px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2); display: none; align-items: center; gap: 10px; 
+            z-index: 1000; font-weight: 600; cursor: pointer; animation: float 3s ease-in-out infinite; 
+            width: max-content;
         }
+        @keyframes float { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, -10px); } }
 
         #dashboard, #historySection { display: none; }
         .status { margin: 15px 0 20px 0; font-size: 13px; font-weight: 600; background: #f8fafc; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; flex-direction: column; align-items: center; gap: 5px; transition: 0.3s; }
         .live-dot { height: 10px; width: 10px; background-color: #10b981; border-radius: 50%; display: inline-block; animation: dotPulse 1.5s infinite; }
         @keyframes dotPulse { 0% { transform: scale(0.8); opacity: 0.5; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(0.8); opacity: 0.5; } }
-        .error-text { color: #ef4444; margin-top: 15px; display: none; font-size: 14px; font-weight: 600; background: #fee2e2; padding: 10px; border-radius: 8px; }
-
+        
         .stats-grid { display: flex; gap: 12px; margin-bottom: 20px; }
-        .stat-card { flex: 1; background: #ffffff; padding: 15px 10px; border-radius: 16px; font-size: 12px; font-weight: 600; box-shadow: 0 4px 10px rgba(0,0,0,0.04); border: 1px solid #f1f5f9; transition: 0.3s; }
-        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.08); }
+        .stat-card { flex: 1; background: #ffffff; padding: 15px 10px; border-radius: 16px; font-size: 12px; font-weight: 600; box-shadow: 0 4px 10px rgba(0,0,0,0.04); border: 1px solid #f1f5f9; }
         .stat-card i { font-size: 20px; margin-bottom: 8px; display: block; }
         
         .table-wrapper { max-height: 300px; overflow-y: auto; border-radius: 12px; border: 1px solid #e2e8f0; background: #fff; }
         .history-table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; }
-        .history-table th { background: #f8fafc; color: #64748b; padding: 12px; position: sticky; top: 0; z-index: 10; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .history-table th { background: #f8fafc; color: #64748b; padding: 12px; position: sticky; top: 0; font-weight: 600; text-transform: uppercase; }
         .history-table td { padding: 12px; border-bottom: 1px solid #f1f5f9; color: #334155; }
     </style>
 </head>
 <body>
 
+    <div class="floating-install" id="installAppBanner" onclick="triggerInstall()">
+        <i class="fas fa-download"></i> Download Web App
+    </div>
+
+    <!-- ================= LOGIN SCREEN ================= -->
     <div class="container" id="loginBox">
         <div class="logo"><i class="fas fa-heartbeat"></i> Airmed Lab</div>
-        <button id="installAppBtn" class="btn-install"><i class="fas fa-download"></i> Install App on Phone</button>
         
         <h3>Secure Employee Login</h3>
         
@@ -109,9 +111,9 @@
         </div>
         
         <button class="btn-login" onclick="login()"><i class="fas fa-sign-in-alt"></i> Login Securely</button>
-        <div id="loginError" class="error-text"><i class="fas fa-exclamation-circle"></i> <span></span></div>
     </div>
 
+    <!-- ================= MAIN DASHBOARD ================= -->
     <div class="container" id="dashboard">
         <div class="logo"><i class="fas fa-heartbeat"></i> Airmed Lab</div>
         <h3 id="welcomeText">Welcome</h3>
@@ -130,6 +132,7 @@
         <button class="btn-logout" onclick="logout()"><i class="fas fa-power-off"></i> Logout securely</button>
     </div>
 
+    <!-- ================= HISTORY DASHBOARD ================= -->
     <div class="container" id="historySection">
         <div class="logo"><i class="fas fa-calendar-check"></i> My Attendance</div>
         
@@ -161,9 +164,7 @@
         function getGPS() {
             const gpsBox = document.getElementById('gpsStatus');
             gpsBox.innerHTML = '<span style="color:#64748b;"><i class="fas fa-spinner fa-spin"></i> Fetching Smart GPS...</span>';
-            gpsBox.style.background = "#f8fafc";
-            gpsBox.style.borderColor = "#e2e8f0";
-
+            
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
@@ -171,17 +172,13 @@
                         currentLng = position.coords.longitude;
                         currentAccuracy = position.coords.accuracy;
 
-                        let signalQuality = currentAccuracy <= 50 ? "Excellent" : (currentAccuracy <= 150 ? "Good" : "Weak (AI will assist)");
+                        let signalQuality = currentAccuracy <= 50 ? "Excellent" : (currentAccuracy <= 150 ? "Good" : "Weak (AI Assisted)");
                         let signalColor = currentAccuracy <= 150 ? "#059669" : "#f59e0b";
 
-                        gpsBox.innerHTML = `<div style="display:flex; align-items:center; justify-content:center; gap:8px; color:${signalColor};"><i class="live-dot" style="background-color:${signalColor};"></i> GPS Active</div><small style="color:#64748b; font-weight:400;">Signal: ${signalQuality} | Accuracy: ±${Math.round(currentAccuracy)}m</small>`;
-                        gpsBox.style.background = currentAccuracy <= 150 ? "#ecfdf5" : "#fffbeb";
-                        gpsBox.style.borderColor = currentAccuracy <= 150 ? "#a7f3d0" : "#fde68a";
+                        gpsBox.innerHTML = `<div style="display:flex; align-items:center; justify-content:center; gap:8px; color:${signalColor};"><i class="live-dot" style="background-color:${signalColor};"></i> GPS Active</div><small style="color:#64748b; font-weight:400;">Signal: ${signalQuality} | ±${Math.round(currentAccuracy)}m</small>`;
                     },
                     (error) => {
                         gpsBox.innerHTML = `<div style="color:#dc2626;"><i class="fas fa-exclamation-triangle"></i> Enable High Accuracy GPS!</div>`;
-                        gpsBox.style.background = "#fef2f2";
-                        gpsBox.style.borderColor = "#fecaca";
                     },
                     { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
                 );
@@ -191,7 +188,7 @@
         async function login() {
             const empId = document.getElementById('empId').value.trim();
             const password = document.getElementById('password').value.trim();
-            if(!empId || !password) return showError("Please enter ID and Password");
+            if(!empId || !password) return Swal.fire('Error', 'Please enter ID and Password', 'error');
             
             const btn = document.querySelector('.btn-login');
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
@@ -206,8 +203,8 @@
                     localStorage.setItem('empId', data.empId);
                     localStorage.setItem('empName', data.name);
                     showDashboard(data.name);
-                } else showError(data.message);
-            } catch (err) { showError("Server connection error."); }
+                } else Swal.fire('Login Failed', data.message, 'error');
+            } catch (err) { Swal.fire('Error', 'Server connection error.', 'error'); }
             finally { btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login Securely'; }
         }
 
@@ -216,23 +213,30 @@
             const remark = document.getElementById('punchRemark').value.trim();
 
             if (!currentLat || !currentLng) {
-                alert("GPS Location not found. Ensure location is ON.");
-                getGPS(); return;
+                return Swal.fire('GPS Not Found', 'Ensure location is ON and allow browser access.', 'warning');
             }
 
             try {
                 const res = await fetch('/api/punch', {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    // Sending accuracy data to AI backend
                     body: JSON.stringify({ empId, type, lat: currentLat, lng: currentLng, accuracy: currentAccuracy, remark })
                 });
                 const data = await res.json();
                 
                 if (data.success) {
-                    alert(`✅ ${data.message}`);
+                    // PROFESSIONAL SUCCESS POPUP
+                    Swal.fire({
+                        title: `Successfully Punched ${type}!`,
+                        html: `<b>Time:</b> ${data.time}<br><small>${data.message}</small>`,
+                        icon: 'success',
+                        confirmButtonText: 'Done',
+                        confirmButtonColor: '#10b981'
+                    });
                     document.getElementById('punchRemark').value = '';
-                } else alert(`❌ Error: ${data.message}`);
-            } catch (err) { alert("Connection Failed."); }
+                } else {
+                    Swal.fire('Punch Rejected', data.message, 'error');
+                }
+            } catch (err) { Swal.fire('Error', 'Connection Failed.', 'error'); }
         }
 
         async function loadHistory() {
@@ -278,12 +282,6 @@
             document.getElementById('loginBox').style.display = 'block';
         }
 
-        function showError(msg) {
-            const err = document.getElementById('loginError');
-            err.querySelector('span').innerText = msg; 
-            err.style.display = 'block';
-        }
-
         function showDashboard(name) {
             document.getElementById('loginBox').style.display = 'none';
             document.getElementById('dashboard').style.display = 'block';
@@ -293,12 +291,23 @@
 
         if (localStorage.getItem('empId')) showDashboard(localStorage.getItem('empName'));
 
-        // PWA Script
+        // PWA Install Script - More Aggressive Banner
         let deferredPrompt;
-        const installBtn = document.getElementById('installAppBtn');
+        const installBanner = document.getElementById('installAppBanner');
+        
         if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
-        window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; installBtn.style.display = 'block'; });
-        installBtn.addEventListener('click', async () => { installBtn.style.display = 'none'; deferredPrompt.prompt(); deferredPrompt = null; });
+        
+        window.addEventListener('beforeinstallprompt', (e) => { 
+            e.preventDefault(); 
+            deferredPrompt = e; 
+            installBanner.style.display = 'flex'; // Show floating banner
+        });
+
+        async function triggerInstall() {
+            installBanner.style.display = 'none'; 
+            deferredPrompt.prompt(); 
+            deferredPrompt = null; 
+        }
     </script>
 </body>
 </html>
