@@ -45,7 +45,7 @@ app.post('/api/punch', async (req, res) => {
     const { empId, type, lat, lng, accuracy, remark } = req.body;
     
     const empInfo = await Employee.findOne({ empId });
-    if (!empInfo) return res.status(44)
+    if (!empInfo) return res.status(400).json({ success: false, message: "Employee not found." });
 
     const savedLocations = await Location.find({});
     let matchedLocation = null;
@@ -87,7 +87,6 @@ app.post('/api/punch', async (req, res) => {
         return res.status(400).json({ success: false, message: "Punch Rejected! Aap kisi authorized clinic range me nahi hain." });
     }
 
-    // MULTI PUNCH INTELLIGENT SEQUENCE CHECK
     const lastPunch = punchRecord.punches[punchRecord.punches.length - 1];
     if (type === 'IN' && lastPunch && lastPunch.type === 'IN') {
         return res.status(400).json({ success: false, message: "Aap pehle se Punched IN hain! Pehle OUT register karein." });
@@ -96,20 +95,14 @@ app.post('/api/punch', async (req, res) => {
         return res.status(400).json({ success: false, message: "Pehle Punch IN karna zaroori hai." });
     }
 
-    // Push entry to sub-array
-    punchRecord.punches.push({
-        type, time: nowTime, lat, lng, accuracy, remark: remark || null
-    });
+    punchRecord.punches.push({ type, time: nowTime, lat, lng, accuracy, remark: remark || null });
 
-    if (finalRemark) {
-        punchRecord.remark = punchRecord.remark ? punchRecord.remark + ' | ' + finalRemark : finalRemark;
-    }
+    if (finalRemark) { punchRecord.remark = punchRecord.remark ? punchRecord.remark + ' | ' + finalRemark : finalRemark; }
     if (aiAssisted) {
         const aiLogMsg = `🤖 AI Approved (${type}): GPS signal drifting.`;
         punchRecord.errorLogs = punchRecord.errorLogs ? punchRecord.errorLogs + ' | ' + aiLogMsg : aiLogMsg;
     }
 
-    // MULTIPLE SESSION TOTAL HOURS ACCUMULATOR
     let totalMs = 0;
     for (let i = 0; i < punchRecord.punches.length; i++) {
         if (punchRecord.punches[i].type === 'IN' && punchRecord.punches[i+1] && punchRecord.punches[i+1].type === 'OUT') {
@@ -185,13 +178,32 @@ app.get('/api/admin/reports', async (req, res) => {
     res.json(await Punch.find(query).sort({ date: -1 }));
 });
 
+// AUTO EMPLOYEE CREATION ON BULK UPLOAD + IN/OUT Fix
 app.post('/api/admin/bulk-punch', async (req, res) => {
     const { punches } = req.body;
     try {
         for (let p of punches) {
+            
+            // Intelligence: Automatically create employee if not exists
+            const empExist = await Employee.findOne({ empId: p.empId });
+            if (!empExist) {
+                await new Employee({
+                    empId: p.empId,
+                    name: `New (${p.empId})`, // Temporary name
+                    password: "123", // Default password
+                    shiftStart: "09:00",
+                    dutyHours: 9
+                }).save();
+            }
+
+            // Create punch array logically
+            let newPunches = [];
+            if(p.entryTime) newPunches.push({ type: 'IN', time: p.entryTime, lat: p.entryLat, lng: p.entryLng });
+            if(p.exitTime) newPunches.push({ type: 'OUT', time: p.exitTime, lat: p.exitLat, lng: p.exitLng });
+
             await Punch.findOneAndUpdate(
                 { empId: p.empId, date: p.date }, 
-                { $set: { status: p.status }, $push: { punches: { type: 'IN', time: p.entryTime, lat: p.entryLat, lng: p.entryLng } } }, 
+                { $set: { status: p.status }, $push: { punches: { $each: newPunches } } }, 
                 { upsert: true }
             );
         }
