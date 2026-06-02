@@ -49,7 +49,7 @@ app.post('/api/punch', async (req, res) => {
 
     for (let loc of savedLocations) {
         const dist = getDistance(lat, lng, loc.lat, loc.lng);
-        if (dist <= loc.radius) {
+        if (dist <= 150) { // Radius 50m se badha kar 150m kar diya GPS accuracy ke liye
             matchedLocation = loc.name;
             break;
         }
