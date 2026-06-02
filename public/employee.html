@@ -16,7 +16,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: #f8fafc; display: flex; justify-content: center; align-items: center; min-height: 100vh; color: #0f172a; padding: 20px; }
         
-        .app-container { background: #ffffff; width: 100%; max-width: 400px; padding: 40px 30px; border-radius: 24px; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.1); border: 1px solid #f1f5f9; text-align: center; }
+        .app-container { background: #ffffff; width: 100%; max-width: 420px; padding: 40px 30px; border-radius: 24px; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.1); border: 1px solid #f1f5f9; text-align: center; }
         
         .logo { font-size: 26px; font-weight: 700; color: #1e3a8a; margin-bottom: 30px; display: flex; align-items: center; justify-content: center; gap: 10px; }
         
@@ -29,7 +29,10 @@
         button { width: 100%; padding: 16px; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.2s; color: white; display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 12px; }
         button:active { transform: scale(0.98); }
         
-        .btn-install { background: #1e293b; color: white; margin-bottom: 30px; display: none; }
+        /* PULSING INSTALL BUTTON */
+        .btn-install { background: #1e293b; color: white; margin-bottom: 30px; display: flex; animation: pulseInstall 2s infinite; }
+        @keyframes pulseInstall { 0% { box-shadow: 0 0 0 0 rgba(30,41,59,0.4); } 70% { box-shadow: 0 0 0 10px rgba(30,41,59,0); } 100% { box-shadow: 0 0 0 0 rgba(30,41,59,0); } }
+        
         .btn-login { background: #3b82f6; box-shadow: 0 4px 12px rgba(59,130,246,0.3); }
         .btn-in { background: #10b981; box-shadow: 0 4px 12px rgba(16,185,129,0.3); }
         .btn-out { background: #ef4444; box-shadow: 0 4px 12px rgba(239,68,68,0.3); }
@@ -38,7 +41,7 @@
         #dashboard, #historySection { display: none; }
         .status-badge { background: #f8fafc; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; font-size: 13px; font-weight: 500; margin-bottom: 20px; display: inline-flex; align-items: center; gap: 8px; }
         .dot { height: 10px; width: 10px; background: #10b981; border-radius: 50%; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.7); } 70% { box-shadow: 0 0 0 6px rgba(16,185,129,0); } }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.7); } 70% { box-shadow: 0 0 0 6px rgba(16,185,129,0); } 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); } }
 
         .stats-grid { display: flex; gap: 10px; margin-bottom: 20px; }
         .stat-card { flex: 1; background: white; padding: 15px; border-radius: 16px; font-size: 12px; font-weight: 600; border: 1px solid #e2e8f0; }
@@ -59,7 +62,7 @@
         <div class="input-group"><i class="fas fa-user"></i><input type="text" id="empId" placeholder="Employee ID"></div>
         <div class="input-group"><i class="fas fa-lock"></i><input type="password" id="password" placeholder="Password"></div>
         
-        <button class="btn-login" onclick="login()">Login Securely</button>
+        <button class="btn-login" onclick="login()"><i class="fas fa-sign-in-alt"></i> Login Securely</button>
     </div>
 
     <div class="app-container" id="dashboard">
@@ -72,7 +75,7 @@
         <button class="btn-in" onclick="punch('IN')"><i class="fas fa-fingerprint"></i> PUNCH IN</button>
         <button class="btn-out" onclick="punch('OUT')"><i class="fas fa-sign-out-alt"></i> PUNCH OUT</button>
         
-        <button class="btn-history" style="margin-top:20px;" onclick="loadHistory()"><i class="fas fa-history"></i> Logs</button>
+        <button class="btn-history" style="margin-top:20px;" onclick="loadHistory()"><i class="fas fa-history"></i> View Logs</button>
         <button onclick="logout()" style="background:none; color:#ef4444; border:none; margin-top:5px; padding:10px; width:auto; display:inline-block;"><i class="fas fa-power-off"></i> Logout</button>
     </div>
 
@@ -122,6 +125,7 @@
 
         async function punch(type) {
             if (!currentLat) return Swal.fire('Wait', 'GPS stabilizing...', 'warning');
+            // GPS Drift Intelligence (Accuracy) is passed here dynamically
             const res = await fetch('/api/punch', {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ empId: localStorage.getItem('empId'), type, lat: currentLat, lng: currentLng, accuracy: currentAccuracy, remark: document.getElementById('punchRemark').value })
@@ -157,18 +161,26 @@
         
         if (localStorage.getItem('empId')) showDashboard(localStorage.getItem('empName'));
 
-        // PWA Setup
+        // ===================================
+        // PWA SETUP & INSTALL (INTELLIGENT)
+        // ===================================
         let deferredPrompt;
         if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
+        
         window.addEventListener('beforeinstallprompt', (e) => { 
-            e.preventDefault(); deferredPrompt = e; 
+            e.preventDefault(); 
+            deferredPrompt = e; 
+            // Only show button if app is installable
             document.getElementById('pwaBtn').style.display = 'flex'; 
         });
+
         async function triggerInstall() {
             if (deferredPrompt) {
-                deferredPrompt.prompt(); deferredPrompt = null; document.getElementById('pwaBtn').style.display = 'none';
+                deferredPrompt.prompt(); 
+                deferredPrompt = null; 
+                document.getElementById('pwaBtn').style.display = 'none';
             } else {
-                Swal.fire({ title: 'Install App', html: `1. Tap Chrome's 3-dot menu (⋮)<br>2. Select <b>Add to Home Screen</b>`, icon: 'info', confirmButtonColor: '#3b82f6' });
+                Swal.fire({ title: 'App Install Instruction', html: `1. Tap Chrome's <b>3-dot menu (⋮)</b> (top right).<br>2. Select <b>Add to Home Screen</b> or <b>Install App</b>.<br>3. Done!`, icon: 'info', confirmButtonColor: '#3b82f6' });
             }
         }
     </script>
