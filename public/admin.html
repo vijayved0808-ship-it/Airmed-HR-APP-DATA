@@ -70,6 +70,7 @@
         
         .live-dot { height: 8px; width: 8px; background-color: #10b981; border-radius: 50%; display: inline-block; margin-right: 5px; animation: pulse 1.5s infinite; }
         .error-log { color: #ef4444; font-size: 12px; background: #fee2e2; padding: 4px 8px; border-radius: 4px; margin-top: 4px; display: inline-block; }
+        .remark-text { color: #8b5cf6; font-size: 12px; background: #f3e8ff; padding: 4px 8px; border-radius: 4px; margin-top: 4px; display: inline-block; font-style: italic; }
 
         @keyframes pulse {
             0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
@@ -96,7 +97,7 @@
             <h3><i class="fas fa-satellite-dish"></i> Live Workforce & Error Logs</h3>
             <div class="table-wrapper">
                 <table id="liveTable">
-                    <thead><tr><th>Employee</th><th>Status</th><th>Punch In</th><th>Live Hours</th><th>System Logs</th></tr></thead>
+                    <thead><tr><th>Employee</th><th>Status</th><th>Punch In</th><th>Live Hours</th><th>Remarks</th><th>System Logs</th></tr></thead>
                     <tbody>
                         </tbody>
                 </table>
@@ -158,9 +159,16 @@
             </div>
             <select id="repEmpFilter" style="margin-top:10px;"><option value="">-- All Staff --</option></select>
             
-            <div style="display:flex; gap:10px; margin-top: 10px;">
+            <div style="display:flex; gap:10px; margin-top: 10px; margin-bottom: 20px;">
                 <button class="btn-primary" onclick="loadReports()"><i class="fas fa-sync"></i> Run</button>
                 <button class="btn-success" onclick="shareMissPunches()" style="background:#25d366;"><i class="fab fa-whatsapp"></i> Notify</button>
+            </div>
+            
+            <div class="table-wrapper" style="max-height: 350px; overflow-y: auto;">
+                <table id="reportTable">
+                    <thead><tr><th>Date</th><th>ID</th><th>In</th><th>Out</th><th>Status</th><th>Remark</th></tr></thead>
+                    <tbody></tbody>
+                </table>
             </div>
         </div>
 
@@ -287,14 +295,15 @@
                     liveHoursHtml = `<span style="color:#64748b;">Logged Out</span>`;
                 }
 
-                // Error Simulation Logic (If backend sends errors array, loop here)
                 let errorHtml = p.errorLogs ? `<div class="error-log"><i class="fas fa-exclamation-triangle"></i> ${p.errorLogs}</div>` : `<span style="color:#cbd5e1; font-size:12px;">No issues</span>`;
+                let remarkHtml = p.remark ? `<div class="remark-text"><i class="fas fa-comment-dots"></i> ${p.remark}</div>` : `<span style="color:#cbd5e1; font-size:12px;">-</span>`;
 
                 tbody.innerHTML += `<tr>
                     <td><strong>${p.empId}</strong></td>
                     <td>${statusHtml}</td>
                     <td>${p.entryTime || '-'}</td>
                     <td>${liveHoursHtml}</td>
+                    <td>${remarkHtml}</td>
                     <td>${errorHtml}</td>
                 </tr>`;
             });
@@ -346,7 +355,6 @@
                     }
                 }
                 
-                // Pushing to Backend Bulk API
                 try {
                     const res = await fetch('/api/admin/bulk-punch', {
                         method: 'POST', headers: {'Content-Type': 'application/json'},
@@ -365,11 +373,53 @@
         // ================= STANDARD REPORTS & NOTIFICATIONS =================
         async function loadReports() {
             loadLiveWorkforce(); // Refresh live view too
-            /* Standard logic for populating full reports remains here... */
+
+            const from = document.getElementById('repFrom').value;
+            const to = document.getElementById('repTo').value;
+            const empId = document.getElementById('repEmpFilter').value;
+
+            let url = `/api/admin/reports?`;
+            if(from && to) url += `from=${from}&to=${to}&`;
+            if(empId) url += `empId=${empId}`;
+
+            const res = await fetch(url);
+            window.currentReportData = await res.json(); 
+            
+            const tbody = document.querySelector('#reportTable tbody');
+            tbody.innerHTML = '';
+
+            window.currentReportData.forEach(p => {
+                let badge = 'b-red';
+                if(p.status === 'Present') badge = 'b-green';
+                if(p.status === 'Half Day') badge = 'b-orange';
+
+                let remarkHtml = p.remark ? `<span style="color:#8b5cf6; font-size:12px; font-style:italic;">${p.remark}</span>` : '-';
+
+                tbody.innerHTML += `<tr>
+                    <td>${p.date}</td>
+                    <td><strong>${p.empId}</strong></td>
+                    <td>${p.entryTime || '-'}</td>
+                    <td>${p.exitTime || '-'}</td>
+                    <td><span class="badge ${badge}">${p.status}</span></td>
+                    <td>${remarkHtml}</td>
+                </tr>`;
+            });
         }
 
         function shareMissPunches() {
-            alert("WhatsApp Notifications logic executed.");
+            if(!window.currentReportData || window.currentReportData.length === 0) {
+                return alert("Pehle upar se report generate karein jisme se miss punch filter ho sake!");
+            }
+            let missPunches = window.currentReportData.filter(p => p.status === "Miss Punch");
+            if(missPunches.length === 0) return alert("Chuni hui date range me koi bhi Miss Punch nahi mila!");
+
+            let message = `*Airmed Lab - Attendance Miss Punch Alert*\n\n`;
+            missPunches.forEach((p, idx) => {
+                message += `${idx+1}. Emp ID: ${p.empId}\n   Date: ${p.date}\n   In-Time: ${p.entryTime || 'Missing'}\n   Out-Time: ${p.exitTime || 'Missing'}\n\n`;
+            });
+            message += `Kripya apna checkout verify karvayein.`;
+            
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, '_blank');
         }
 
         document.addEventListener('DOMContentLoaded', () => {
