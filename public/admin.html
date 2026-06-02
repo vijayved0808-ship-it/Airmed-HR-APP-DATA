@@ -101,7 +101,7 @@
                 document.getElementById('locLat').value = e.latlng.lat.toFixed(6);
                 document.getElementById('locLng').value = e.latlng.lng.toFixed(6);
                 if(window.tempCircle) map.removeLayer(window.tempCircle);
-                window.tempCircle = L.circle([e.latlng.lat, e.latlng.lng], {color: 'orange', radius: 50}).addTo(map);
+                window.tempCircle = L.circle([e.latlng.lat, e.latlng.lng], {color: 'orange', radius: 150}).addTo(map);
             });
         }
 
@@ -116,7 +116,7 @@
 
             data.forEach(loc => {
                 tbody.innerHTML += `<tr><td>${loc.name}</td><td>${loc.lat}</td><td>${loc.lng}</td><td><button class="btn-disable" onclick="deleteClinic('${loc._gid || loc._id}')">Delete</button></td></tr>`;
-                let c = L.circle([loc.lat, loc.lng], {color: '#1e3a8a', radius: 50}).addTo(map).bindPopup(loc.name);
+                let c = L.circle([loc.lat, loc.lng], {color: '#1e3a8a', radius: 150}).addTo(map).bindPopup(loc.name);
                 fenceCircles.push(c);
             });
         }
