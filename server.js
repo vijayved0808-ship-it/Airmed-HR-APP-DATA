@@ -13,17 +13,14 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Direct Link par Web App Khulne ka code
 app.get('/', (req, res) => {
     res.redirect('/employee.html');
 });
 
-// MongoDB Connection (Warning-free)
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch(err => console.log(err));
 
-// Helper: Distance Calculator (Haversine Formula)
 function getDistance(lat1, lon1, lat2, lon2) {
     const R = 6371e3; 
     const φ1 = lat1 * Math.PI/180;
@@ -36,7 +33,6 @@ function getDistance(lat1, lon1, lat2, lon2) {
 }
 
 // ====== EMPLOYEE PORTAL APIs ======
-
 app.post('/api/login', async (req, res) => {
     const { empId, password } = req.body;
     const emp = await Employee.findOne({ empId, password });
@@ -48,7 +44,9 @@ app.post('/api/login', async (req, res) => {
 app.post('/api/punch', async (req, res) => {
     const { empId, type, lat, lng, accuracy, remark } = req.body;
     
-    // AI Intelligence Location Matching
+    const empInfo = await Employee.findOne({ empId });
+    if (!empInfo) return res.status(44)
+
     const savedLocations = await Location.find({});
     let matchedLocation = null;
     let aiAssisted = false;
@@ -68,77 +66,82 @@ app.post('/api/punch', async (req, res) => {
         }
     }
 
-    // TIMEZONE FIX: Convert Server UTC Time to Indian Standard Time (IST)
     const now = new Date();
-    const istOffset = 330 * 60000; // 5 hours 30 mins
+    const istOffset = 330 * 60000; 
     const istDate = new Date(now.getTime() + istOffset);
-    
     const today = istDate.toISOString().split('T')[0];
     const nowTime = istDate.toISOString().split('T')[1].substring(0, 8); 
 
     let punchRecord = await Punch.findOne({ empId, date: today });
-    let finalRemark = remark ? `${type}: ${remark}` : null;
-
-    // Out of Location Logic
-    if (!matchedLocation) {
-        const errorMsg = `🚨 Rejected Attempt (${type} at ${nowTime}). Out of geofence.`;
-        if (punchRecord) {
-            punchRecord.errorLogs = punchRecord.errorLogs ? punchRecord.errorLogs + ' | ' + errorMsg : errorMsg;
-            if(finalRemark) punchRecord.remark = punchRecord.remark ? punchRecord.remark + ' | ' + finalRemark : finalRemark;
-            await punchRecord.save();
-        } else {
-            punchRecord = new Punch({ empId, date: today, errorLogs: errorMsg, remark: finalRemark });
-            await punchRecord.save();
-        }
-        return res.status(400).json({ success: false, message: "Punch Rejected! Aap kisi bhi authorize clinic ke andar nahi hain." });
+    if (!punchRecord) {
+        punchRecord = new Punch({ empId, date: today, punches: [] });
     }
 
-    let aiLogMsg = aiAssisted ? `🤖 AI Approved (${type}): GPS signal drifting.` : null;
+    let finalRemark = remark ? `${type}: ${remark}` : null;
 
-    if (type === 'IN') {
-        if (punchRecord && punchRecord.entryTime) return res.status(400).json({ success: false, message: "Already Punched IN today." });
-        if (!punchRecord) {
-            punchRecord = new Punch({ empId, date: today, entryTime: nowTime, entryLat: lat, entryLng: lng, status: "Miss Punch", remark: finalRemark, errorLogs: aiLogMsg });
-        } else {
-            punchRecord.entryTime = nowTime; punchRecord.entryLat = lat; punchRecord.entryLng = lng;
-            if(finalRemark) punchRecord.remark = punchRecord.remark ? punchRecord.remark + ' | ' + finalRemark : finalRemark;
-            if(aiLogMsg) punchRecord.errorLogs = punchRecord.errorLogs ? punchRecord.errorLogs + ' | ' + aiLogMsg : aiLogMsg;
-        }
-    } else if (type === 'OUT') {
-        if (!punchRecord || !punchRecord.entryTime) return res.status(400).json({ success: false, message: "Please Punch IN first." });
-        if (punchRecord.exitTime) return res.status(400).json({ success: false, message: "Already Punched OUT today." });
-        
-        punchRecord.exitTime = nowTime; punchRecord.exitLat = lat; punchRecord.exitLng = lng;
+    if (!matchedLocation) {
+        const errorMsg = `🚨 Rejected ${type} at ${nowTime} (Out of geofence)`;
+        punchRecord.errorLogs = punchRecord.errorLogs ? punchRecord.errorLogs + ' | ' + errorMsg : errorMsg;
         if(finalRemark) punchRecord.remark = punchRecord.remark ? punchRecord.remark + ' | ' + finalRemark : finalRemark;
-        if(aiLogMsg) punchRecord.errorLogs = punchRecord.errorLogs ? punchRecord.errorLogs + ' | ' + aiLogMsg : aiLogMsg;
-        
-        // Final Hours calculation logic
-        const entryDate = new Date(`1970-01-01T${punchRecord.entryTime}Z`);
-        const exitDate = new Date(`1970-01-01T${nowTime}Z`);
-        const hours = (exitDate - entryDate) / (1000 * 60 * 60);
-        punchRecord.status = hours >= 4 ? "Present" : "Half Day";
+        await punchRecord.save();
+        return res.status(400).json({ success: false, message: "Punch Rejected! Aap kisi authorized clinic range me nahi hain." });
+    }
+
+    // MULTI PUNCH INTELLIGENT SEQUENCE CHECK
+    const lastPunch = punchRecord.punches[punchRecord.punches.length - 1];
+    if (type === 'IN' && lastPunch && lastPunch.type === 'IN') {
+        return res.status(400).json({ success: false, message: "Aap pehle se Punched IN hain! Pehle OUT register karein." });
+    }
+    if (type === 'OUT' && (!lastPunch || lastPunch.type === 'OUT')) {
+        return res.status(400).json({ success: false, message: "Pehle Punch IN karna zaroori hai." });
+    }
+
+    // Push entry to sub-array
+    punchRecord.punches.push({
+        type, time: nowTime, lat, lng, accuracy, remark: remark || null
+    });
+
+    if (finalRemark) {
+        punchRecord.remark = punchRecord.remark ? punchRecord.remark + ' | ' + finalRemark : finalRemark;
+    }
+    if (aiAssisted) {
+        const aiLogMsg = `🤖 AI Approved (${type}): GPS signal drifting.`;
+        punchRecord.errorLogs = punchRecord.errorLogs ? punchRecord.errorLogs + ' | ' + aiLogMsg : aiLogMsg;
+    }
+
+    // MULTIPLE SESSION TOTAL HOURS ACCUMULATOR
+    let totalMs = 0;
+    for (let i = 0; i < punchRecord.punches.length; i++) {
+        if (punchRecord.punches[i].type === 'IN' && punchRecord.punches[i+1] && punchRecord.punches[i+1].type === 'OUT') {
+            const t1 = new Date(`1970-01-01T${punchRecord.punches[i].time}Z`);
+            const t2 = new Date(`1970-01-01T${punchRecord.punches[i+1].time}Z`);
+            totalMs += (t2 - t1);
+        }
+    }
+    const totalHours = totalMs / (1000 * 60 * 60);
+
+    if (totalHours > 0) {
+        punchRecord.status = totalHours >= empInfo.dutyHours ? "Present" : "Half Day";
+    } else {
+        punchRecord.status = "Miss Punch";
     }
 
     await punchRecord.save();
-    const successMsg = aiAssisted ? `Punched ${type} Successfully (AI Assisted due to weak GPS)` : `Punched ${type} at ${matchedLocation}`;
-    res.json({ success: true, message: successMsg, time: nowTime });
+    res.json({ success: true, message: `Punched ${type} at ${matchedLocation}`, time: nowTime });
 });
 
 app.get('/api/employee/history', async (req, res) => {
     const { empId } = req.query;
-    if(!empId) return res.status(400).json({success: false, message: "Employee ID required"});
     const history = await Punch.find({ empId }).sort({ date: -1 }).limit(30); 
     res.json({ success: true, history });
 });
 
 // ====== ADMIN PANEL APIs ======
-
 app.get('/api/admin/employees', async (req, res) => {
     const emps = await Employee.find({ role: { $ne: 'admin' } });
     res.json(emps);
 });
 
-// ADD OR EDIT EMPLOYEE (Updated with shiftStart & dutyHours)
 app.post('/api/admin/employees', async (req, res) => {
     const { empId, name, password, phone, shiftStart, dutyHours, id } = req.body;
     if (id) {
@@ -156,23 +159,22 @@ app.post('/api/admin/employees', async (req, res) => {
 app.put('/api/admin/employees/status', async (req, res) => {
     const { id, status } = req.body;
     await Employee.findByIdAndUpdate(id, { status });
-    res.json({ success: true, message: `Employee status changed to ${status}.` });
+    res.json({ success: true, message: `Status changed to ${status}.` });
 });
 
 app.get('/api/admin/locations', async (req, res) => {
-    const locs = await Location.find({});
-    res.json(locs);
+    res.json(await Location.find({}));
 });
 
 app.post('/api/admin/locations', async (req, res) => {
     const { name, lat, lng } = req.body;
     await Location.findOneAndUpdate({ name }, { lat, lng }, { upsert: true });
-    res.json({ success: true, message: "Location/Geofence saved." });
+    res.json({ success: true });
 });
 
 app.delete('/api/admin/locations/:id', async (req, res) => {
     await Location.findByIdAndDelete(req.params.id);
-    res.json({ success: true, message: "Location deleted." });
+    res.json({ success: true });
 });
 
 app.get('/api/admin/reports', async (req, res) => {
@@ -180,34 +182,21 @@ app.get('/api/admin/reports', async (req, res) => {
     let query = {};
     if (from && to) query.date = { $gte: from, $lte: to };
     if (empId) query.empId = empId;
-
-    const punches = await Punch.find(query).sort({ date: -1 });
-    res.json(punches);
+    res.json(await Punch.find(query).sort({ date: -1 }));
 });
 
-// BULK CSV UPLOAD (Updated with Lat/Lng capability)
 app.post('/api/admin/bulk-punch', async (req, res) => {
     const { punches } = req.body;
     try {
         for (let p of punches) {
             await Punch.findOneAndUpdate(
                 { empId: p.empId, date: p.date }, 
-                { $set: { 
-                    entryTime: p.entryTime, 
-                    exitTime: p.exitTime, 
-                    status: p.status,
-                    entryLat: p.entryLat,
-                    entryLng: p.entryLng,
-                    exitLat: p.exitLat,
-                    exitLng: p.exitLng
-                } }, 
-                { upsert: true, new: true }
+                { $set: { status: p.status }, $push: { punches: { type: 'IN', time: p.entryTime, lat: p.entryLat, lng: p.entryLng } } }, 
+                { upsert: true }
             );
         }
-        res.json({ success: true, message: "Bulk data imported successfully." });
-    } catch (err) {
-        res.status(500).json({ success: false, error: err.message });
-    }
+        res.json({ success: true });
+    } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 const PORT = process.env.PORT || 3000;
