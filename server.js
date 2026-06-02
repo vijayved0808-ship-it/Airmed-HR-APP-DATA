@@ -41,15 +41,27 @@ app.post('/api/login', async (req, res) => {
 });
 
 app.post('/api/punch', async (req, res) => {
-    const { empId, type, lat, lng, remark } = req.body;
+    const { empId, type, lat, lng, accuracy, remark } = req.body;
     
     const savedLocations = await Location.find({});
     let matchedLocation = null;
+    let aiAssisted = false;
 
+    // AI Intelligence Location Matching
     for (let loc of savedLocations) {
         const dist = getDistance(lat, lng, loc.lat, loc.lng);
-        if (dist <= 150) { 
+        const safeRadius = 150; 
+        const gpsErrorMargin = accuracy || 0; // Capture phone's reported accuracy
+        
+        // Case 1: Direct perfect hit
+        if (dist <= safeRadius) { 
             matchedLocation = loc.name;
+            break;
+        } 
+        // Case 2: AI Assisted hit (Phone is drifting, but drift margin touches our circle)
+        else if (dist <= (safeRadius + gpsErrorMargin) && gpsErrorMargin <= 500) {
+            matchedLocation = loc.name;
+            aiAssisted = true;
             break;
         }
     }
@@ -60,8 +72,9 @@ app.post('/api/punch', async (req, res) => {
 
     let finalRemark = remark ? `${type}: ${remark}` : null;
 
+    // Rejected Punch (Out of range entirely)
     if (!matchedLocation) {
-        const errorMsg = `Out of Location (${type} Attempt at ${nowTime})`;
+        const errorMsg = `🚨 Rejected Attempt (${type} at ${nowTime}). Out of geofence.`;
         if (punchRecord) {
             punchRecord.errorLogs = punchRecord.errorLogs ? punchRecord.errorLogs + ' | ' + errorMsg : errorMsg;
             if(finalRemark) punchRecord.remark = punchRecord.remark ? punchRecord.remark + ' | ' + finalRemark : finalRemark;
@@ -70,16 +83,20 @@ app.post('/api/punch', async (req, res) => {
             punchRecord = new Punch({ empId, date: today, errorLogs: errorMsg, remark: finalRemark });
             await punchRecord.save();
         }
-        return res.status(400).json({ success: false, message: "Punch Rejected! You are outside the authorized clinic/geofence." });
+        return res.status(400).json({ success: false, message: "Punch Rejected! Aap kisi bhi authorize clinic ke andar nahi hain." });
     }
 
+    let aiLogMsg = aiAssisted ? `🤖 AI Approved (${type}): GPS signal drifting.` : null;
+
+    // Processing Valid Punch
     if (type === 'IN') {
         if (punchRecord && punchRecord.entryTime) return res.status(400).json({ success: false, message: "Already Punched IN today." });
         if (!punchRecord) {
-            punchRecord = new Punch({ empId, date: today, entryTime: nowTime, entryLat: lat, entryLng: lng, status: "Miss Punch", remark: finalRemark });
+            punchRecord = new Punch({ empId, date: today, entryTime: nowTime, entryLat: lat, entryLng: lng, status: "Miss Punch", remark: finalRemark, errorLogs: aiLogMsg });
         } else {
             punchRecord.entryTime = nowTime; punchRecord.entryLat = lat; punchRecord.entryLng = lng;
             if(finalRemark) punchRecord.remark = punchRecord.remark ? punchRecord.remark + ' | ' + finalRemark : finalRemark;
+            if(aiLogMsg) punchRecord.errorLogs = punchRecord.errorLogs ? punchRecord.errorLogs + ' | ' + aiLogMsg : aiLogMsg;
         }
     } else if (type === 'OUT') {
         if (!punchRecord || !punchRecord.entryTime) return res.status(400).json({ success: false, message: "Please Punch IN first." });
@@ -87,23 +104,23 @@ app.post('/api/punch', async (req, res) => {
         
         punchRecord.exitTime = nowTime; punchRecord.exitLat = lat; punchRecord.exitLng = lng;
         if(finalRemark) punchRecord.remark = punchRecord.remark ? punchRecord.remark + ' | ' + finalRemark : finalRemark;
+        if(aiLogMsg) punchRecord.errorLogs = punchRecord.errorLogs ? punchRecord.errorLogs + ' | ' + aiLogMsg : aiLogMsg;
         
         const hours = (new Date(`1970-01-01T${nowTime}Z`) - new Date(`1970-01-01T${punchRecord.entryTime}Z`)) / (1000 * 60 * 60);
         punchRecord.status = hours >= 4 ? "Present" : "Half Day";
     }
 
     await punchRecord.save();
-    res.json({ success: true, message: `Punched ${type} at ${matchedLocation} (${nowTime})` });
+    const successMsg = aiAssisted ? `Punched ${type} Successfully (AI Assisted due to weak GPS)` : `Punched ${type} at ${matchedLocation} (${nowTime})`;
+    res.json({ success: true, message: successMsg });
 });
 
-// Get personal history for employee dashboard
 app.get('/api/employee/history', async (req, res) => {
     const { empId } = req.query;
     if(!empId) return res.status(400).json({success: false, message: "Employee ID required"});
-    const history = await Punch.find({ empId }).sort({ date: -1 }).limit(30); // Last 30 days
+    const history = await Punch.find({ empId }).sort({ date: -1 }).limit(30); 
     res.json({ success: true, history });
 });
-
 
 // ====== ADMIN PANEL APIs ======
 
