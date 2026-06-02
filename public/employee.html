@@ -4,103 +4,209 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Airmed Lab - Employee Portal</title>
+    
+    <!-- PWA & Fonts & Icons -->
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#1e3a8a">
-    <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f4f8; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .container { background: white; width: 100%; max-width: 400px; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; margin: 15px; }
-        .logo { font-size: 26px; font-weight: 900; color: #1e3a8a; margin-bottom: 20px; }
-        input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; background-color: #f8fafc; }
-        input:focus, textarea:focus { outline: none; border-color: #2563eb; background-color: #fff; }
-        button { width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.3s; color: white; margin-top: 10px; }
-        
-        .btn-login { background-color: #2563eb; }
-        .btn-in { background-color: #10b981; }
-        .btn-out { background-color: #f59e0b; }
-        .btn-history { background-color: #475569; margin-top: 20px; }
-        .btn-logout { background-color: #ef4444; margin-top: 10px; }
-        .btn-install { background-color: #8b5cf6; margin-bottom: 20px; display: none; }
-        
-        #dashboard, #historySection { display: none; }
-        .status { margin-top: 10px; font-size: 13px; font-weight: 600; background: #f1f5f9; padding: 10px; border-radius: 6px; }
-        .error-text { color: #ef4444; margin-top: 10px; display: none; font-size: 14px; font-weight: 600; }
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
-        /* History Table Styles */
-        .stats-grid { display: flex; gap: 10px; margin-bottom: 15px; }
-        .stat-card { flex: 1; background: #f1f5f9; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: bold; }
-        .history-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; text-align: left; }
-        .history-table th, .history-table td { padding: 8px; border-bottom: 1px solid #e2e8f0; }
-        .history-table th { background: #f8fafc; color: #64748b; }
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        
+        body { 
+            background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%); 
+            display: flex; justify-content: center; align-items: center; min-height: 100vh; 
+            color: #1e293b; padding: 15px; overflow-x: hidden;
+        }
+
+        /* Animated Container */
+        .container { 
+            background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(10px);
+            width: 100%; max-width: 420px; padding: 35px 25px; 
+            border-radius: 24px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05), 0 5px 15px rgba(0,0,0,0.03); 
+            text-align: center; 
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            border: 1px solid rgba(255,255,255,0.8);
+        }
+
+        @keyframes slideUp {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Branding */
+        .logo { font-size: 28px; font-weight: 800; color: #1e3a8a; margin-bottom: 25px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .logo i { color: #3b82f6; font-size: 32px; animation: heartbeat 2s infinite; }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        h3 { color: #334155; margin-bottom: 20px; font-weight: 600; font-size: 18px; }
+
+        /* Modern Inputs */
+        .input-group { position: relative; margin-bottom: 15px; }
+        .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
+        input, textarea { 
+            width: 100%; padding: 14px 14px 14px 45px; 
+            border: 2px solid #e2e8f0; border-radius: 12px; 
+            font-size: 15px; background-color: #f8fafc; transition: all 0.3s ease; 
+        }
+        textarea { padding-left: 14px; resize: none; }
+        input:focus, textarea:focus { outline: none; border-color: #3b82f6; background-color: #fff; box-shadow: 0 0 0 4px rgba(59,130,246,0.1); }
+
+        /* Premium Buttons */
+        button { 
+            width: 100%; padding: 15px; border: none; border-radius: 12px; 
+            font-size: 15px; font-weight: 600; cursor: pointer; 
+            transition: all 0.3s ease; color: white; margin-top: 10px; 
+            display: flex; justify-content: center; align-items: center; gap: 8px;
+        }
+        button:active { transform: scale(0.96); }
+
+        .btn-login { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); box-shadow: 0 4px 12px rgba(37,99,235,0.3); margin-top: 5px; }
+        .btn-login:hover { box-shadow: 0 6px 15px rgba(37,99,235,0.4); transform: translateY(-2px); }
+
+        .btn-in { background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 4px 12px rgba(16,185,129,0.3); }
+        .btn-in:hover { box-shadow: 0 6px 15px rgba(16,185,129,0.4); transform: translateY(-2px); }
+
+        .btn-out { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); box-shadow: 0 4px 12px rgba(245,158,11,0.3); }
+        .btn-out:hover { box-shadow: 0 6px 15px rgba(245,158,11,0.4); transform: translateY(-2px); }
+
+        .btn-history { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; margin-top: 25px; }
+        .btn-history:hover { background: #e2e8f0; color: #1e293b; }
+
+        .btn-logout { background: transparent; color: #ef4444; margin-top: 5px; font-size: 14px; }
+        .btn-logout:hover { text-decoration: underline; background: #fee2e2; }
+
+        .btn-install { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); margin-bottom: 25px; display: none; animation: pulseGlow 2s infinite; }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(139, 92, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
+        }
+
+        /* Section Visibility */
+        #dashboard, #historySection { display: none; }
+
+        /* GPS Status Badge */
+        .status { margin: 15px 0 25px 0; font-size: 13px; font-weight: 600; background: #f8fafc; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; flex-direction: column; align-items: center; gap: 5px; transition: 0.3s; }
+        .live-dot { height: 10px; width: 10px; background-color: #10b981; border-radius: 50%; display: inline-block; animation: dotPulse 1.5s infinite; }
+        @keyframes dotPulse { 0% { transform: scale(0.8); opacity: 0.5; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(0.8); opacity: 0.5; } }
+        .error-text { color: #ef4444; margin-top: 15px; display: none; font-size: 14px; font-weight: 600; background: #fee2e2; padding: 10px; border-radius: 8px; }
+
+        /* History Table & Stats */
+        .stats-grid { display: flex; gap: 12px; margin-bottom: 20px; }
+        .stat-card { flex: 1; background: #ffffff; padding: 15px 10px; border-radius: 16px; font-size: 12px; font-weight: 600; box-shadow: 0 4px 10px rgba(0,0,0,0.04); border: 1px solid #f1f5f9; transition: 0.3s; }
+        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.08); }
+        .stat-card i { font-size: 20px; margin-bottom: 8px; display: block; }
+        
+        .table-wrapper { max-height: 300px; overflow-y: auto; border-radius: 12px; border: 1px solid #e2e8f0; background: #fff; }
+        .history-table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; }
+        .history-table th { background: #f8fafc; color: #64748b; padding: 12px; position: sticky; top: 0; z-index: 10; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .history-table td { padding: 12px; border-bottom: 1px solid #f1f5f9; color: #334155; }
+        .history-table tr:hover { background: #f8fafc; }
+        
+        /* Custom Scrollbar for table */
+        .table-wrapper::-webkit-scrollbar { width: 6px; }
+        .table-wrapper::-webkit-scrollbar-track { background: #f1f5f9; }
+        .table-wrapper::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
 <body>
 
+    <!-- ================= LOGIN SCREEN ================= -->
     <div class="container" id="loginBox">
-        <div class="logo">Airmed Lab</div>
-        <button id="installAppBtn" class="btn-install">📲 Install App on Phone</button>
-        <h3 style="color: #334155; margin-bottom: 20px;">Employee Login</h3>
-        <input type="text" id="empId" placeholder="Employee ID (e.g. AIRMED-001)">
-        <input type="password" id="password" placeholder="PIN/Password">
-        <button class="btn-login" onclick="login()">Secure Login</button>
-        <div id="loginError" class="error-text"></div>
-    </div>
-
-    <!-- MAIN DASHBOARD -->
-    <div class="container" id="dashboard">
-        <div class="logo">Airmed Lab</div>
-        <h3 id="welcomeText" style="color: #334155;">Welcome</h3>
+        <div class="logo"><i class="fas fa-heartbeat"></i> Airmed Lab</div>
+        <button id="installAppBtn" class="btn-install"><i class="fas fa-download"></i> Install App on Phone</button>
         
-        <p class="status" id="gpsStatus">⏳ Fetching GPS Location...</p>
+        <h3>Secure Employee Login</h3>
         
-        <div style="margin-top: 20px;">
-            <textarea id="punchRemark" rows="2" placeholder="Any Remark? (e.g., Late due to traffic)"></textarea>
-            <button class="btn-in" onclick="punch('IN')">PUNCH IN (Start Shift)</button>
-            <button class="btn-out" onclick="punch('OUT')">PUNCH OUT (End Shift)</button>
+        <div class="input-group">
+            <i class="fas fa-user"></i>
+            <input type="text" id="empId" placeholder="Employee ID (e.g. AIRMED-001)">
+        </div>
+        <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="password" placeholder="PIN/Password">
         </div>
         
-        <button class="btn-history" onclick="loadHistory()">View My Attendance History</button>
-        <button class="btn-logout" onclick="logout()">Logout</button>
+        <button class="btn-login" onclick="login()"><i class="fas fa-sign-in-alt"></i> Login Securely</button>
+        <div id="loginError" class="error-text"><i class="fas fa-exclamation-circle"></i> <span></span></div>
     </div>
 
-    <!-- HISTORY DASHBOARD -->
+    <!-- ================= MAIN DASHBOARD ================= -->
+    <div class="container" id="dashboard">
+        <div class="logo"><i class="fas fa-heartbeat"></i> Airmed Lab</div>
+        <h3 id="welcomeText">Welcome</h3>
+        
+        <div class="status" id="gpsStatus">
+            <span style="color:#64748b;"><i class="fas fa-spinner fa-spin"></i> Fetching GPS...</span>
+        </div>
+        
+        <div>
+            <textarea id="punchRemark" rows="2" placeholder="Any Remark? (e.g., Late due to traffic)"></textarea>
+            <button class="btn-in" onclick="punch('IN')"><i class="fas fa-fingerprint"></i> PUNCH IN (Start Shift)</button>
+            <button class="btn-out" onclick="punch('OUT')"><i class="fas fa-sign-out-alt"></i> PUNCH OUT (End Shift)</button>
+        </div>
+        
+        <button class="btn-history" onclick="loadHistory()"><i class="fas fa-history"></i> View Attendance History</button>
+        <button class="btn-logout" onclick="logout()"><i class="fas fa-power-off"></i> Logout securely</button>
+    </div>
+
+    <!-- ================= HISTORY DASHBOARD ================= -->
     <div class="container" id="historySection">
-        <div class="logo">My Attendance</div>
+        <div class="logo"><i class="fas fa-calendar-check"></i> My Attendance</div>
         
         <div class="stats-grid">
-            <div class="stat-card" style="color:#10b981;">Present<br><span id="statPresent" style="font-size:18px;">0</span></div>
-            <div class="stat-card" style="color:#f59e0b;">Missed<br><span id="statMissed" style="font-size:18px;">0</span></div>
-            <div class="stat-card" style="color:#ef4444;">Errors<br><span id="statErrors" style="font-size:18px;">0</span></div>
+            <div class="stat-card" style="color:#10b981;">
+                <i class="fas fa-check-circle"></i>Present<br><span id="statPresent" style="font-size:20px; color:#059669;">0</span>
+            </div>
+            <div class="stat-card" style="color:#f59e0b;">
+                <i class="fas fa-exclamation-circle"></i>Missed<br><span id="statMissed" style="font-size:20px; color:#d97706;">0</span>
+            </div>
+            <div class="stat-card" style="color:#ef4444;">
+                <i class="fas fa-times-circle"></i>Errors<br><span id="statErrors" style="font-size:20px; color:#dc2626;">0</span>
+            </div>
         </div>
 
-        <div style="max-height: 300px; overflow-y: auto;">
+        <div class="table-wrapper">
             <table class="history-table">
                 <thead><tr><th>Date</th><th>In</th><th>Out</th><th>Status</th></tr></thead>
                 <tbody id="historyBody"></tbody>
             </table>
         </div>
         
-        <button class="btn-history" onclick="backToDashboard()">Back to Punch Dashboard</button>
+        <button class="btn-history" onclick="backToDashboard()"><i class="fas fa-arrow-left"></i> Back to Dashboard</button>
     </div>
 
     <script>
         let currentLat = null, currentLng = null;
 
         function getGPS() {
-            document.getElementById('gpsStatus').innerHTML = "⏳ Fetching GPS Location...";
-            document.getElementById('gpsStatus').style.color = "#64748b";
+            const gpsBox = document.getElementById('gpsStatus');
+            gpsBox.innerHTML = '<span style="color:#64748b;"><i class="fas fa-spinner fa-spin"></i> Fetching GPS...</span>';
+            gpsBox.style.background = "#f8fafc";
+            gpsBox.style.borderColor = "#e2e8f0";
+
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
                         currentLat = position.coords.latitude;
                         currentLng = position.coords.longitude;
-                        document.getElementById('gpsStatus').innerHTML = `📍 GPS Active<br><small>${currentLat.toFixed(5)}, ${currentLng.toFixed(5)}</small>`;
-                        document.getElementById('gpsStatus').style.color = "#059669";
-                        document.getElementById('gpsStatus').style.background = "#d1fae5";
+                        gpsBox.innerHTML = `<div style="display:flex; align-items:center; gap:8px; color:#059669;"><i class="live-dot"></i> GPS Active</div><small style="color:#64748b; font-weight:400;">${currentLat.toFixed(5)}, ${currentLng.toFixed(5)}</small>`;
+                        gpsBox.style.background = "#ecfdf5";
+                        gpsBox.style.borderColor = "#a7f3d0";
                     },
                     (error) => {
-                        document.getElementById('gpsStatus').innerHTML = "⚠️ Enable High Accuracy GPS!";
-                        document.getElementById('gpsStatus').style.color = "#dc2626";
-                        document.getElementById('gpsStatus').style.background = "#fee2e2";
+                        gpsBox.innerHTML = `<div style="color:#dc2626;"><i class="fas fa-exclamation-triangle"></i> Enable High Accuracy GPS!</div>`;
+                        gpsBox.style.background = "#fef2f2";
+                        gpsBox.style.borderColor = "#fecaca";
                     },
                     { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
                 );
@@ -111,6 +217,9 @@
             const empId = document.getElementById('empId').value.trim();
             const password = document.getElementById('password').value.trim();
             if(!empId || !password) return showError("Please enter ID and Password");
+            
+            const btn = document.querySelector('.btn-login');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
             
             try {
                 const res = await fetch('/api/login', {
@@ -124,6 +233,7 @@
                     showDashboard(data.name);
                 } else showError(data.message);
             } catch (err) { showError("Server connection error."); }
+            finally { btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login Securely'; }
         }
 
         async function punch(type) {
@@ -168,9 +278,9 @@
 
                 const statusColor = h.status === 'Present' ? 'color:#10b981' : (h.status === 'Miss Punch' ? 'color:#ef4444' : 'color:#f59e0b');
                 tbody.innerHTML += `<tr>
-                    <td>${h.date}</td>
-                    <td>${h.entryTime || '-'}</td>
-                    <td>${h.exitTime || '-'}</td>
+                    <td style="font-weight:600;">${h.date}</td>
+                    <td>${h.entryTime ? h.entryTime.slice(0,5) : '-'}</td>
+                    <td>${h.exitTime ? h.exitTime.slice(0,5) : '-'}</td>
                     <td style="font-weight:bold; ${statusColor}">${h.status}</td>
                 </tr>`;
             });
@@ -194,13 +304,14 @@
 
         function showError(msg) {
             const err = document.getElementById('loginError');
-            err.innerText = msg; err.style.display = 'block';
+            err.querySelector('span').innerText = msg; 
+            err.style.display = 'block';
         }
 
         function showDashboard(name) {
             document.getElementById('loginBox').style.display = 'none';
             document.getElementById('dashboard').style.display = 'block';
-            document.getElementById('welcomeText').innerText = `Welcome, ${name}`;
+            document.getElementById('welcomeText').innerText = `Welcome, ${name.split(' ')[0]}`;
             getGPS();
         }
 
