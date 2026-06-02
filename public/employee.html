@@ -9,7 +9,7 @@
     <meta name="theme-color" content="#1e3a8a">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-    <!-- SweetAlert2 for Professional Popups -->
+    
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
@@ -43,6 +43,7 @@
 
         .input-group { position: relative; margin-bottom: 15px; }
         .input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
+        
         input, textarea { 
             width: 100%; padding: 14px 14px 14px 45px; 
             border: 2px solid #e2e8f0; border-radius: 12px; 
@@ -65,16 +66,20 @@
         .btn-history { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; margin-top: 25px; }
         .btn-logout { background: transparent; color: #ef4444; margin-top: 5px; font-size: 14px; }
         
-        .floating-install { 
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); 
-            background: #1e293b; color: white; padding: 12px 25px; border-radius: 30px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2); display: none; align-items: center; gap: 10px; 
-            z-index: 1000; font-weight: 600; cursor: pointer; animation: float 3s ease-in-out infinite; 
-            width: max-content;
+        /* PREMIUM NATIVE MOBILE INSTALL BUTTON */
+        .btn-install-app { 
+            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); 
+            font-weight: bold; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); 
+            margin-bottom: 25px; display: none; animation: pulseGlow 2s infinite; 
         }
-        @keyframes float { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, -10px); } }
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(139, 92, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
+        }
 
         #dashboard, #historySection { display: none; }
+        
         .status { margin: 15px 0 20px 0; font-size: 13px; font-weight: 600; background: #f8fafc; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; flex-direction: column; align-items: center; gap: 5px; transition: 0.3s; }
         .live-dot { height: 10px; width: 10px; background-color: #10b981; border-radius: 50%; display: inline-block; animation: dotPulse 1.5s infinite; }
         @keyframes dotPulse { 0% { transform: scale(0.8); opacity: 0.5; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(0.8); opacity: 0.5; } }
@@ -85,19 +90,18 @@
         
         .table-wrapper { max-height: 300px; overflow-y: auto; border-radius: 12px; border: 1px solid #e2e8f0; background: #fff; }
         .history-table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; }
-        .history-table th { background: #f8fafc; color: #64748b; padding: 12px; position: sticky; top: 0; font-weight: 600; text-transform: uppercase; }
+        .history-table th { background: #f8fafc; color: #64748b; padding: 12px; position: sticky; top: 0; z-index: 10; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
         .history-table td { padding: 12px; border-bottom: 1px solid #f1f5f9; color: #334155; }
     </style>
 </head>
 <body>
 
-    <div class="floating-install" id="installAppBanner" onclick="triggerInstall()">
-        <i class="fas fa-download"></i> Download Web App
-    </div>
-
-    <!-- ================= LOGIN SCREEN ================= -->
     <div class="container" id="loginBox">
         <div class="logo"><i class="fas fa-heartbeat"></i> Airmed Lab</div>
+        
+        <button class="btn-install-app" id="mobileInstallDirectBtn" onclick="triggerInstall()">
+            <i class="fas fa-mobile-alt" style="font-size: 18px;"></i> 📲 INSTALL IN MOBILE
+        </button>
         
         <h3>Secure Employee Login</h3>
         
@@ -113,7 +117,6 @@
         <button class="btn-login" onclick="login()"><i class="fas fa-sign-in-alt"></i> Login Securely</button>
     </div>
 
-    <!-- ================= MAIN DASHBOARD ================= -->
     <div class="container" id="dashboard">
         <div class="logo"><i class="fas fa-heartbeat"></i> Airmed Lab</div>
         <h3 id="welcomeText">Welcome</h3>
@@ -123,16 +126,15 @@
         </div>
         
         <div>
-            <textarea id="punchRemark" rows="2" placeholder="Any Remark? (e.g., Late due to traffic)"></textarea>
-            <button class="btn-in" onclick="punch('IN')"><i class="fas fa-fingerprint"></i> PUNCH IN (Start Shift)</button>
-            <button class="btn-out" onclick="punch('OUT')"><i class="fas fa-sign-out-alt"></i> PUNCH OUT (End Shift)</button>
+            <textarea id="punchRemark" rows="2" placeholder="Any Session Remark? (Optional)"></textarea>
+            <button class="btn-in" onclick="punch('IN')"><i class="fas fa-fingerprint"></i> REGISTER PUNCH IN</button>
+            <button class="btn-out" onclick="punch('OUT')"><i class="fas fa-sign-out-alt"></i> REGISTER PUNCH OUT</button>
         </div>
         
         <button class="btn-history" onclick="loadHistory()"><i class="fas fa-history"></i> View Attendance History</button>
         <button class="btn-logout" onclick="logout()"><i class="fas fa-power-off"></i> Logout securely</button>
     </div>
 
-    <!-- ================= HISTORY DASHBOARD ================= -->
     <div class="container" id="historySection">
         <div class="logo"><i class="fas fa-calendar-check"></i> My Attendance</div>
         
@@ -161,6 +163,7 @@
     <script>
         let currentLat = null, currentLng = null, currentAccuracy = null;
 
+        // GPS Fetching Logic
         function getGPS() {
             const gpsBox = document.getElementById('gpsStatus');
             gpsBox.innerHTML = '<span style="color:#64748b;"><i class="fas fa-spinner fa-spin"></i> Fetching Smart GPS...</span>';
@@ -185,6 +188,7 @@
             }
         }
 
+        // Login Logic
         async function login() {
             const empId = document.getElementById('empId').value.trim();
             const password = document.getElementById('password').value.trim();
@@ -208,12 +212,13 @@
             finally { btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login Securely'; }
         }
 
+        // Punch Logic (Multi-Punch support)
         async function punch(type) {
             const empId = localStorage.getItem('empId');
             const remark = document.getElementById('punchRemark').value.trim();
 
             if (!currentLat || !currentLng) {
-                return Swal.fire('GPS Not Found', 'Ensure location is ON and allow browser access.', 'warning');
+                return Swal.fire('GPS Not Found', 'Ensure location is ON and wait for signal.', 'warning');
             }
 
             try {
@@ -224,7 +229,6 @@
                 const data = await res.json();
                 
                 if (data.success) {
-                    // PROFESSIONAL SUCCESS POPUP
                     Swal.fire({
                         title: `Successfully Punched ${type}!`,
                         html: `<b>Time:</b> ${data.time}<br><small>${data.message}</small>`,
@@ -239,6 +243,7 @@
             } catch (err) { Swal.fire('Error', 'Connection Failed.', 'error'); }
         }
 
+        // History Logic (Multi-Punch display ready)
         async function loadHistory() {
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('historySection').style.display = 'block';
@@ -256,11 +261,16 @@
                 if(h.status === 'Miss Punch') missedCount++;
                 if(h.errorLogs) errorCount++;
 
+                // Grab first IN and last OUT for simple history display
+                let firstIn = h.punches && h.punches.find(p => p.type === 'IN');
+                let lastOut = h.punches && [...h.punches].reverse().find(p => p.type === 'OUT');
+
                 const statusColor = h.status === 'Present' ? 'color:#10b981' : (h.status === 'Miss Punch' ? 'color:#ef4444' : 'color:#f59e0b');
+                
                 tbody.innerHTML += `<tr>
                     <td style="font-weight:600;">${h.date}</td>
-                    <td>${h.entryTime ? h.entryTime.slice(0,5) : '-'}</td>
-                    <td>${h.exitTime ? h.exitTime.slice(0,5) : '-'}</td>
+                    <td>${firstIn ? firstIn.time.slice(0,5) : '-'}</td>
+                    <td>${lastOut ? lastOut.time.slice(0,5) : '-'}</td>
                     <td style="font-weight:bold; ${statusColor}">${h.status}</td>
                 </tr>`;
             });
@@ -291,22 +301,35 @@
 
         if (localStorage.getItem('empId')) showDashboard(localStorage.getItem('empName'));
 
-        // PWA Install Script - More Aggressive Banner
+        // ==========================================
+        // PWA INSTALL SCRIPT LOGIC
+        // ==========================================
         let deferredPrompt;
-        const installBanner = document.getElementById('installAppBanner');
+        const installBtn = document.getElementById('mobileInstallDirectBtn');
         
-        if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
+        // 1. Register Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').then(() => {
+                console.log("Service Worker Active");
+            });
+        }
         
+        // 2. Catch the Install Prompt Event
         window.addEventListener('beforeinstallprompt', (e) => { 
             e.preventDefault(); 
             deferredPrompt = e; 
-            installBanner.style.display = 'flex'; // Show floating banner
+            installBtn.style.display = 'block'; // Button ab dikhega
         });
 
+        // 3. Trigger Install when Button is Clicked
         async function triggerInstall() {
-            installBanner.style.display = 'none'; 
-            deferredPrompt.prompt(); 
-            deferredPrompt = null; 
+            if (deferredPrompt) {
+                installBtn.style.display = 'none'; // Click hone ke baad chupa do
+                deferredPrompt.prompt(); 
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response to install prompt: ${outcome}`);
+                deferredPrompt = null; 
+            }
         }
     </script>
 </body>
