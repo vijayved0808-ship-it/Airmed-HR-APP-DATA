@@ -4,73 +4,90 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Airmed Lab - Employee Portal</title>
-
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#1e3a8a">
-
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f8; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .container { background: white; width: 100%; max-width: 400px; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; margin: 15px; }
-        .logo { font-size: 26px; font-weight: 900; color: #1e3a8a; margin-bottom: 20px; letter-spacing: 1px; }
-        input { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; font-size: 16px; background-color: #f8fafc; }
-        input:focus { outline: none; border-color: #2563eb; background-color: #fff; }
-        button { width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; color: white; margin-top: 10px; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f4f8; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .container { background: white; width: 100%; max-width: 400px; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; margin: 15px; }
+        .logo { font-size: 26px; font-weight: 900; color: #1e3a8a; margin-bottom: 20px; }
+        input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; background-color: #f8fafc; }
+        input:focus, textarea:focus { outline: none; border-color: #2563eb; background-color: #fff; }
+        button { width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.3s; color: white; margin-top: 10px; }
         
         .btn-login { background-color: #2563eb; }
-        .btn-login:hover { background-color: #1d4ed8; }
         .btn-in { background-color: #10b981; }
-        .btn-in:hover { background-color: #059669; }
         .btn-out { background-color: #f59e0b; }
-        .btn-out:hover { background-color: #d97706; }
-        .btn-logout { background-color: #ef4444; margin-top: 30px; }
-        .btn-logout:hover { background-color: #dc2626; }
+        .btn-history { background-color: #475569; margin-top: 20px; }
+        .btn-logout { background-color: #ef4444; margin-top: 10px; }
+        .btn-install { background-color: #8b5cf6; margin-bottom: 20px; display: none; }
         
-        /* Install Button Styling */
-        .btn-install { background-color: #8b5cf6; margin-bottom: 20px; display: none; box-shadow: 0 4px 6px rgba(139, 92, 246, 0.3); }
-        .btn-install:hover { background-color: #7c3aed; }
-        
-        #dashboard { display: none; }
-        .status { margin-top: 15px; font-size: 14px; color: #64748b; font-weight: 600; background: #f1f5f9; padding: 10px; border-radius: 6px; }
+        #dashboard, #historySection { display: none; }
+        .status { margin-top: 10px; font-size: 13px; font-weight: 600; background: #f1f5f9; padding: 10px; border-radius: 6px; }
         .error-text { color: #ef4444; margin-top: 10px; display: none; font-size: 14px; font-weight: 600; }
+
+        /* History Table Styles */
+        .stats-grid { display: flex; gap: 10px; margin-bottom: 15px; }
+        .stat-card { flex: 1; background: #f1f5f9; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: bold; }
+        .history-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; text-align: left; }
+        .history-table th, .history-table td { padding: 8px; border-bottom: 1px solid #e2e8f0; }
+        .history-table th { background: #f8fafc; color: #64748b; }
     </style>
 </head>
 <body>
 
     <div class="container" id="loginBox">
         <div class="logo">Airmed Lab</div>
-        
         <button id="installAppBtn" class="btn-install">📲 Install App on Phone</button>
-        
         <h3 style="color: #334155; margin-bottom: 20px;">Employee Login</h3>
         <input type="text" id="empId" placeholder="Employee ID (e.g. AIRMED-001)">
         <input type="password" id="password" placeholder="PIN/Password">
-        <button class="btn-login" onclick="login()">Login</button>
+        <button class="btn-login" onclick="login()">Secure Login</button>
         <div id="loginError" class="error-text"></div>
     </div>
 
+    <!-- MAIN DASHBOARD -->
     <div class="container" id="dashboard">
         <div class="logo">Airmed Lab</div>
         <h3 id="welcomeText" style="color: #334155;">Welcome</h3>
         
         <p class="status" id="gpsStatus">⏳ Fetching GPS Location...</p>
         
-        <div style="margin-top: 25px;">
-            <button class="btn-in" onclick="punch('IN')">PUNCH IN (Start Day)</button>
-            <button class="btn-out" onclick="punch('OUT')">PUNCH OUT (End Day)</button>
+        <div style="margin-top: 20px;">
+            <textarea id="punchRemark" rows="2" placeholder="Any Remark? (e.g., Late due to traffic)"></textarea>
+            <button class="btn-in" onclick="punch('IN')">PUNCH IN (Start Shift)</button>
+            <button class="btn-out" onclick="punch('OUT')">PUNCH OUT (End Shift)</button>
         </div>
         
+        <button class="btn-history" onclick="loadHistory()">View My Attendance History</button>
         <button class="btn-logout" onclick="logout()">Logout</button>
     </div>
 
-    <script>
-        let currentLat = null;
-        let currentLng = null;
+    <!-- HISTORY DASHBOARD -->
+    <div class="container" id="historySection">
+        <div class="logo">My Attendance</div>
+        
+        <div class="stats-grid">
+            <div class="stat-card" style="color:#10b981;">Present<br><span id="statPresent" style="font-size:18px;">0</span></div>
+            <div class="stat-card" style="color:#f59e0b;">Missed<br><span id="statMissed" style="font-size:18px;">0</span></div>
+            <div class="stat-card" style="color:#ef4444;">Errors<br><span id="statErrors" style="font-size:18px;">0</span></div>
+        </div>
 
-        // ====== GPS LOGIC ======
+        <div style="max-height: 300px; overflow-y: auto;">
+            <table class="history-table">
+                <thead><tr><th>Date</th><th>In</th><th>Out</th><th>Status</th></tr></thead>
+                <tbody id="historyBody"></tbody>
+            </table>
+        </div>
+        
+        <button class="btn-history" onclick="backToDashboard()">Back to Punch Dashboard</button>
+    </div>
+
+    <script>
+        let currentLat = null, currentLng = null;
+
         function getGPS() {
             document.getElementById('gpsStatus').innerHTML = "⏳ Fetching GPS Location...";
             document.getElementById('gpsStatus').style.color = "#64748b";
-            
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
@@ -81,145 +98,121 @@
                         document.getElementById('gpsStatus').style.background = "#d1fae5";
                     },
                     (error) => {
-                        document.getElementById('gpsStatus').innerHTML = "⚠️ Please enable High Accuracy GPS!";
+                        document.getElementById('gpsStatus').innerHTML = "⚠️ Enable High Accuracy GPS!";
                         document.getElementById('gpsStatus').style.color = "#dc2626";
                         document.getElementById('gpsStatus').style.background = "#fee2e2";
                     },
-                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 } // Ensures fresh coordinates
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
                 );
-            } else {
-                document.getElementById('gpsStatus').innerHTML = "⚠️ GPS not supported on this device.";
             }
         }
 
-        // ====== API LOGIC ======
         async function login() {
             const empId = document.getElementById('empId').value.trim();
             const password = document.getElementById('password').value.trim();
-            const btn = document.querySelector('.btn-login');
-            
-            if(!empId || !password) return showLoginError("Please enter ID and Password");
-
-            btn.innerText = "Logging in...";
-            btn.disabled = true;
+            if(!empId || !password) return showError("Please enter ID and Password");
             
             try {
                 const res = await fetch('/api/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ empId, password })
                 });
                 const data = await res.json();
-                
                 if (data.success) {
                     localStorage.setItem('empId', data.empId);
                     localStorage.setItem('empName', data.name);
                     showDashboard(data.name);
-                } else {
-                    showLoginError(data.message);
-                }
-            } catch (err) {
-                showLoginError("Server connection error. Try again.");
-            } finally {
-                btn.innerText = "Login";
-                btn.disabled = false;
-            }
+                } else showError(data.message);
+            } catch (err) { showError("Server connection error."); }
         }
 
         async function punch(type) {
             const empId = localStorage.getItem('empId');
+            const remark = document.getElementById('punchRemark').value.trim();
+
             if (!currentLat || !currentLng) {
-                alert("GPS Location not found. Please wait a moment or turn your GPS Off and On again.");
-                getGPS(); 
-                return;
+                alert("GPS Location not found. Ensure location is ON.");
+                getGPS(); return;
             }
 
             try {
                 const res = await fetch('/api/punch', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ empId, type, lat: currentLat, lng: currentLng })
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ empId, type, lat: currentLat, lng: currentLng, remark })
                 });
                 const data = await res.json();
                 
                 if (data.success) {
                     alert(`✅ ${data.message}`);
-                } else {
-                    alert(`❌ Error: ${data.message}`);
-                }
-            } catch (err) {
-                alert("Failed to submit punch. Please check your internet connection.");
-            }
+                    document.getElementById('punchRemark').value = '';
+                } else alert(`❌ Error: ${data.message}`);
+            } catch (err) { alert("Connection Failed."); }
+        }
+
+        async function loadHistory() {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('historySection').style.display = 'block';
+            
+            const empId = localStorage.getItem('empId');
+            const res = await fetch(`/api/employee/history?empId=${empId}`);
+            const data = await res.json();
+            
+            let presentCount = 0, missedCount = 0, errorCount = 0;
+            const tbody = document.getElementById('historyBody');
+            tbody.innerHTML = '';
+
+            data.history.forEach(h => {
+                if(h.status === 'Present' || h.status === 'Half Day') presentCount++;
+                if(h.status === 'Miss Punch') missedCount++;
+                if(h.errorLogs) errorCount++;
+
+                const statusColor = h.status === 'Present' ? 'color:#10b981' : (h.status === 'Miss Punch' ? 'color:#ef4444' : 'color:#f59e0b');
+                tbody.innerHTML += `<tr>
+                    <td>${h.date}</td>
+                    <td>${h.entryTime || '-'}</td>
+                    <td>${h.exitTime || '-'}</td>
+                    <td style="font-weight:bold; ${statusColor}">${h.status}</td>
+                </tr>`;
+            });
+
+            document.getElementById('statPresent').innerText = presentCount;
+            document.getElementById('statMissed').innerText = missedCount;
+            document.getElementById('statErrors').innerText = errorCount;
+        }
+
+        function backToDashboard() {
+            document.getElementById('historySection').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
         }
 
         function logout() {
-            localStorage.removeItem('empId');
-            localStorage.removeItem('empName');
+            localStorage.clear();
             document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('historySection').style.display = 'none';
             document.getElementById('loginBox').style.display = 'block';
-            document.getElementById('empId').value = '';
-            document.getElementById('password').value = '';
-            document.getElementById('loginError').style.display = 'none';
-            currentLat = null;
-            currentLng = null;
         }
 
-        // ====== HELPER FUNCTIONS ======
-        function showLoginError(msg) {
-            document.getElementById('loginError').innerText = msg;
-            document.getElementById('loginError').style.display = 'block';
+        function showError(msg) {
+            const err = document.getElementById('loginError');
+            err.innerText = msg; err.style.display = 'block';
         }
 
         function showDashboard(name) {
             document.getElementById('loginBox').style.display = 'none';
             document.getElementById('dashboard').style.display = 'block';
             document.getElementById('welcomeText').innerText = `Welcome, ${name}`;
-            getGPS(); // Fetch GPS immediately when dashboard loads
+            getGPS();
         }
 
-        // ====== INITIALIZATION & AUTO-LOGIN ======
-        const savedEmpId = localStorage.getItem('empId');
-        const savedEmpName = localStorage.getItem('empName') || savedEmpId;
-        if (savedEmpId) {
-            showDashboard(savedEmpName);
-        }
+        // Init Check
+        if (localStorage.getItem('empId')) showDashboard(localStorage.getItem('empName'));
 
-        // ====== PWA INSTALL LOGIC ======
+        // PWA Script
         let deferredPrompt;
         const installBtn = document.getElementById('installAppBtn');
-
-        // 1. Register Service Worker
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js').then(reg => {
-                    console.log('ServiceWorker registered:', reg.scope);
-                }).catch(err => {
-                    console.log('ServiceWorker registration failed:', err);
-                });
-            });
-        }
-
-        // 2. Catch the install prompt and show button
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            installBtn.style.display = 'block';
-        });
-
-        // 3. Handle Install Button Click
-        installBtn.addEventListener('click', async () => {
-            installBtn.style.display = 'none'; // Hide button after click
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            console.log(`User response to the install prompt: ${outcome}`);
-            deferredPrompt = null;
-        });
-
-        // 4. Listen for successful install
-        window.addEventListener('appinstalled', () => {
-            console.log('App completely installed');
-            installBtn.style.display = 'none';
-        });
+        if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
+        window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; installBtn.style.display = 'block'; });
+        installBtn.addEventListener('click', async () => { installBtn.style.display = 'none'; deferredPrompt.prompt(); deferredPrompt = null; });
     </script>
 </body>
 </html>
