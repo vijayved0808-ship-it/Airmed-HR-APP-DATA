@@ -13,16 +13,17 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Direct Link Routing to Employee Portal
+// Direct Link par Web App Khulne ka code
 app.get('/', (req, res) => {
     res.redirect('/employee.html');
 });
 
+// MongoDB Connection (Warning-free)
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch(err => console.log(err));
 
-// Helper: Distance Calculator (Haversine)
+// Helper: Distance Calculator (Haversine Formula)
 function getDistance(lat1, lon1, lat2, lon2) {
     const R = 6371e3; 
     const φ1 = lat1 * Math.PI/180;
@@ -47,6 +48,7 @@ app.post('/api/login', async (req, res) => {
 app.post('/api/punch', async (req, res) => {
     const { empId, type, lat, lng, accuracy, remark } = req.body;
     
+    // AI Intelligence Location Matching
     const savedLocations = await Location.find({});
     let matchedLocation = null;
     let aiAssisted = false;
@@ -66,9 +68,9 @@ app.post('/api/punch', async (req, res) => {
         }
     }
 
-    // TIMEZONE FIX: Convert Server UTC Time to IST (+5:30)
+    // TIMEZONE FIX: Convert Server UTC Time to Indian Standard Time (IST)
     const now = new Date();
-    const istOffset = 330 * 60000; // 5 hours 30 mins in milliseconds
+    const istOffset = 330 * 60000; // 5 hours 30 mins
     const istDate = new Date(now.getTime() + istOffset);
     
     const today = istDate.toISOString().split('T')[0];
@@ -77,6 +79,7 @@ app.post('/api/punch', async (req, res) => {
     let punchRecord = await Punch.findOne({ empId, date: today });
     let finalRemark = remark ? `${type}: ${remark}` : null;
 
+    // Out of Location Logic
     if (!matchedLocation) {
         const errorMsg = `🚨 Rejected Attempt (${type} at ${nowTime}). Out of geofence.`;
         if (punchRecord) {
@@ -109,7 +112,7 @@ app.post('/api/punch', async (req, res) => {
         if(finalRemark) punchRecord.remark = punchRecord.remark ? punchRecord.remark + ' | ' + finalRemark : finalRemark;
         if(aiLogMsg) punchRecord.errorLogs = punchRecord.errorLogs ? punchRecord.errorLogs + ' | ' + aiLogMsg : aiLogMsg;
         
-        // Calculate Hours correctly
+        // Final Hours calculation logic
         const entryDate = new Date(`1970-01-01T${punchRecord.entryTime}Z`);
         const exitDate = new Date(`1970-01-01T${nowTime}Z`);
         const hours = (exitDate - entryDate) / (1000 * 60 * 60);
@@ -135,15 +138,16 @@ app.get('/api/admin/employees', async (req, res) => {
     res.json(emps);
 });
 
+// ADD OR EDIT EMPLOYEE (Updated with shiftStart & dutyHours)
 app.post('/api/admin/employees', async (req, res) => {
-    const { empId, name, password, phone, id } = req.body;
+    const { empId, name, password, phone, shiftStart, dutyHours, id } = req.body;
     if (id) {
-        await Employee.findByIdAndUpdate(id, { empId, name, password, phone });
+        await Employee.findByIdAndUpdate(id, { empId, name, password, phone, shiftStart, dutyHours });
         return res.json({ success: true, message: "Employee updated successfully." });
     } else {
         const exist = await Employee.findOne({ empId });
         if (exist) return res.status(400).json({ success: false, message: "Employee ID already exists." });
-        const newEmp = new Employee({ empId, name, password, phone });
+        const newEmp = new Employee({ empId, name, password, phone, shiftStart, dutyHours });
         await newEmp.save();
         res.json({ success: true, message: "Employee added successfully." });
     }
@@ -181,13 +185,22 @@ app.get('/api/admin/reports', async (req, res) => {
     res.json(punches);
 });
 
+// BULK CSV UPLOAD (Updated with Lat/Lng capability)
 app.post('/api/admin/bulk-punch', async (req, res) => {
     const { punches } = req.body;
     try {
         for (let p of punches) {
             await Punch.findOneAndUpdate(
                 { empId: p.empId, date: p.date }, 
-                { $set: { entryTime: p.entryTime, exitTime: p.exitTime, status: p.status } }, 
+                { $set: { 
+                    entryTime: p.entryTime, 
+                    exitTime: p.exitTime, 
+                    status: p.status,
+                    entryLat: p.entryLat,
+                    entryLng: p.entryLng,
+                    exitLat: p.exitLat,
+                    exitLng: p.exitLng
+                } }, 
                 { upsert: true, new: true }
             );
         }
